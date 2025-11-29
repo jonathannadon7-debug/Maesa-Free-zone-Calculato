@@ -2,12 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Container Order Builder - Alcohol Inventory</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Container Order Builder</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          screens: {
+            'xs': '480px',
+          }
+        }
+      }
+    }
+  </script>
   <style>
     @media print {
       .no-print { display: none !important; }
@@ -20,24 +31,30 @@
     .scrollbar-thin::-webkit-scrollbar-track { background: #1e293b; border-radius: 3px; }
     .scrollbar-thin::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
     .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+    @supports (-webkit-touch-callout: none) {
+      .min-h-screen-ios { min-height: -webkit-fill-available; }
+    }
   </style>
 </head>
 <body class="bg-slate-900">
   <div id="root"></div>
 
   <script type="text/babel">
-    const { useState, useMemo } = React;
+    const { useState, useMemo, useEffect } = React;
 
-    // ==================== TRANSLATIONS ====================
     const translations = {
       en: {
         appTitle: "Container Order Builder",
+        appTitleShort: "Order Builder",
         products: "Products",
         container20ft: "20ft Container",
+        containerShort: "Container",
         bottles: "bottles",
+        bottlesShort: "btls",
         containerEmpty: "Container empty",
-        bottlesToMinimum: "bottles to minimum",
-        optimalLoad: "Optimal container load!",
+        bottlesToMinimum: "to minimum",
+        optimalLoad: "Optimal load!",
         overBy: "Over by",
         markup: "MARKUP",
         quick: "Quick",
@@ -45,12 +62,12 @@
         cost: "Cost",
         resale: "resale",
         profitPerBottle: "per bottle",
-        caseCost: "Case Cost",
+        caseCost: "Case",
         btlPerCase: "Btl/Case",
-        resalePerBtl: "Resale/Btl",
-        profitPerCase: "Profit/Case",
-        addCases: "Add Cases",
-        adjustCases: "Adjust Cases",
+        resalePerBtl: "Resale",
+        profitPerCase: "Profit",
+        addCases: "Add",
+        adjustCases: "Adjust",
         case: "CASE",
         cases: "CASES",
         orderInfo: "Order Info",
@@ -61,149 +78,160 @@
         cart: "Cart",
         emptyCart: "Empty cart",
         orderNotes: "Order notes...",
-        totalCases: "Total Cases",
-        totalBottles: "Total Bottles",
-        ourCost: "Our Cost",
+        totalCases: "Cases",
+        totalBottles: "Bottles",
+        ourCost: "Cost",
         revenue: "Revenue",
-        profit: "PROFIT",
+        profit: "Profit",
         roi: "ROI",
         purchaseOrder: "PURCHASE ORDER",
         close: "Close",
         pricingTier: "Markup",
-        internalCode: "Internal Code",
+        internalCode: "Code",
         product: "Product",
         size: "Size",
-        totalBtls: "Total Btls",
-        revenueCol: "Revenue",
+        totalBtls: "Btls",
+        revenueCol: "Rev",
         profitCol: "Profit",
         totalProfit: "TOTAL PROFIT",
-        printSavePdf: "Print / Save PDF",
-        generatePO: "Generate Purchase Order",
+        printSavePdf: "Print / PDF",
+        generatePO: "Generate PO",
         all: "All",
         champagne: "Champagne",
         espumante: "Espumante",
         cognac: "Cognac",
         whisky: "Whisky",
-        searchProducts: "Search products...",
-        clearAll: "Clear All",
+        searchProducts: "Search...",
+        clearAll: "Clear",
+        viewCart: "View Cart",
+        hideCart: "Hide Cart",
       },
       fr: {
         appTitle: "Constructeur de Commande",
+        appTitleShort: "Commande",
         products: "Produits",
         container20ft: "Container 20 pieds",
+        containerShort: "Container",
         bottles: "bouteilles",
+        bottlesShort: "bout.",
         containerEmpty: "Container vide",
-        bottlesToMinimum: "bout. pour minimum",
-        optimalLoad: "Chargement optimal!",
-        overBy: "Excès de",
+        bottlesToMinimum: "pour min.",
+        optimalLoad: "Optimal!",
+        overBy: "Excès",
         markup: "MARGE",
         quick: "Rapide",
         preview: "Aperçu",
         cost: "Coût",
         resale: "revente",
-        profitPerBottle: "par bouteille",
-        caseCost: "Prix Caisse",
-        btlPerCase: "Btl/Caisse",
-        resalePerBtl: "Revente/Btl",
-        profitPerCase: "Profit/Caisse",
+        profitPerBottle: "par bout.",
+        caseCost: "Caisse",
+        btlPerCase: "Btl/Cs",
+        resalePerBtl: "Revente",
+        profitPerCase: "Profit",
         addCases: "Ajouter",
         adjustCases: "Ajuster",
         case: "CAISSE",
         cases: "CAISSES",
-        orderInfo: "Info Commande",
+        orderInfo: "Commande",
         poNumber: "N° Commande",
         vendor: "Fournisseur",
-        vendorPlaceholder: "Nom fournisseur",
+        vendorPlaceholder: "Nom",
         date: "Date",
         cart: "Panier",
-        emptyCart: "Panier vide",
+        emptyCart: "Vide",
         orderNotes: "Notes...",
-        totalCases: "Total Caisses",
-        totalBottles: "Total Bouteilles",
-        ourCost: "Notre Coût",
+        totalCases: "Caisses",
+        totalBottles: "Bouteilles",
+        ourCost: "Coût",
         revenue: "Revenu",
-        profit: "PROFIT",
+        profit: "Profit",
         roi: "ROI",
         purchaseOrder: "BON DE COMMANDE",
         close: "Fermer",
         pricingTier: "Marge",
-        internalCode: "Code Interne",
+        internalCode: "Code",
         product: "Produit",
         size: "Taille",
-        totalBtls: "Total Btls",
-        revenueCol: "Revenu",
+        totalBtls: "Btls",
+        revenueCol: "Rev",
         profitCol: "Profit",
         totalProfit: "PROFIT TOTAL",
-        printSavePdf: "Imprimer / PDF",
-        generatePO: "Générer Bon de Commande",
+        printSavePdf: "Imprimer",
+        generatePO: "Générer BC",
         all: "Tous",
-        champagne: "Champagne",
-        espumante: "Espumante",
+        champagne: "Champ.",
+        espumante: "Espum.",
         cognac: "Cognac",
         whisky: "Whisky",
         searchProducts: "Rechercher...",
         clearAll: "Effacer",
+        viewCart: "Voir Panier",
+        hideCart: "Masquer",
       },
       es: {
         appTitle: "Constructor de Pedidos",
+        appTitleShort: "Pedidos",
         products: "Productos",
         container20ft: "Contenedor 20 pies",
+        containerShort: "Contenedor",
         bottles: "botellas",
-        containerEmpty: "Contenedor vacío",
-        bottlesToMinimum: "bot. para mínimo",
-        optimalLoad: "¡Carga óptima!",
-        overBy: "Exceso de",
+        bottlesShort: "bot.",
+        containerEmpty: "Vacío",
+        bottlesToMinimum: "para mín.",
+        optimalLoad: "¡Óptimo!",
+        overBy: "Exceso",
         markup: "MARGEN",
         quick: "Rápido",
         preview: "Vista",
         cost: "Costo",
         resale: "reventa",
-        profitPerBottle: "por botella",
-        caseCost: "Costo Caja",
-        btlPerCase: "Btl/Caja",
-        resalePerBtl: "Reventa/Btl",
-        profitPerCase: "Gan./Caja",
+        profitPerBottle: "por bot.",
+        caseCost: "Caja",
+        btlPerCase: "Btl/Cj",
+        resalePerBtl: "Reventa",
+        profitPerCase: "Gan.",
         addCases: "Agregar",
         adjustCases: "Ajustar",
         case: "CAJA",
         cases: "CAJAS",
-        orderInfo: "Info Pedido",
+        orderInfo: "Pedido",
         poNumber: "N° Orden",
         vendor: "Proveedor",
-        vendorPlaceholder: "Nombre proveedor",
+        vendorPlaceholder: "Nombre",
         date: "Fecha",
         cart: "Carrito",
-        emptyCart: "Carrito vacío",
+        emptyCart: "Vacío",
         orderNotes: "Notas...",
-        totalCases: "Total Cajas",
-        totalBottles: "Total Botellas",
-        ourCost: "Nuestro Costo",
-        revenue: "Ingresos",
-        profit: "GANANCIA",
+        totalCases: "Cajas",
+        totalBottles: "Botellas",
+        ourCost: "Costo",
+        revenue: "Ingreso",
+        profit: "Ganancia",
         roi: "ROI",
         purchaseOrder: "ORDEN DE COMPRA",
         close: "Cerrar",
         pricingTier: "Margen",
-        internalCode: "Código Interno",
+        internalCode: "Código",
         product: "Producto",
         size: "Tamaño",
-        totalBtls: "Total Btls",
-        revenueCol: "Ingresos",
-        profitCol: "Ganancia",
+        totalBtls: "Btls",
+        revenueCol: "Ing",
+        profitCol: "Gan",
         totalProfit: "GANANCIA TOTAL",
-        printSavePdf: "Imprimir / PDF",
-        generatePO: "Generar Orden de Compra",
+        printSavePdf: "Imprimir",
+        generatePO: "Generar OC",
         all: "Todos",
-        champagne: "Champagne",
-        espumante: "Espumante",
+        champagne: "Champ.",
+        espumante: "Espum.",
         cognac: "Cognac",
         whisky: "Whisky",
         searchProducts: "Buscar...",
         clearAll: "Borrar",
+        viewCart: "Ver Carrito",
+        hideCart: "Ocultar",
       }
     };
 
-    // ==================== CONSTANTS ====================
     const CONTAINER_MIN = 7000;
     const CONTAINER_MAX = 9000;
     const CONTAINER_ABSOLUTE_MAX = 10000;
@@ -256,7 +284,6 @@
       WHISKY: { bg: 'bg-amber-800/30', border: 'border-amber-600/40', text: 'text-amber-200' },
     };
 
-    // SVG Icons
     const Icons = {
       Search: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>,
       Wine: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 22h8M12 18v4M12 18a5 5 0 0 0 5-5c0-4-5-9-5-9s-5 5-5 9a5 5 0 0 0 5 5Z"/></svg>,
@@ -265,10 +292,13 @@
       FileText: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>,
       ShoppingCart: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>,
       Printer: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect width="12" height="8" x="6" y="14" rx="1"/></svg>,
-      X: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>,
+      X: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>,
       Check: () => <svg className="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>,
       Alert: () => <svg className="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/></svg>,
-      Percent: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>,
+      ChevronUp: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></svg>,
+      ChevronDown: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>,
+      Plus: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>,
+      Minus: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M5 12h14"/></svg>,
     };
 
     function App() {
@@ -278,6 +308,7 @@
       const [cart, setCart] = useState([]);
       const [showPO, setShowPO] = useState(false);
       const [markupPercent, setMarkupPercent] = useState(20);
+      const [showMobileCart, setShowMobileCart] = useState(false);
       const [poInfo, setPoInfo] = useState({
         poNumber: `PO-${Date.now().toString().slice(-6)}`,
         vendor: '',
@@ -303,7 +334,7 @@
       const filteredProducts = useMemo(() => {
         return productData.filter(p => {
           const searchLower = search.toLowerCase();
-          const matchesSearch = p.name.toLowerCase().includes(searchLower) || p.internalCode.toLowerCase().includes(searchLower) || p.codigo.toLowerCase().includes(searchLower);
+          const matchesSearch = p.name.toLowerCase().includes(searchLower) || p.internalCode.toLowerCase().includes(searchLower);
           const matchesCategory = category === 'All' || p.category === category;
           return matchesSearch && matchesCategory;
         });
@@ -340,14 +371,8 @@
         const totalCases = cart.reduce((sum, item) => sum + item.qty, 0);
         const totalBottles = cart.reduce((sum, item) => sum + (item.qty * item.bottlesPerCase), 0);
         const totalCost = cart.reduce((sum, item) => sum + (item.qty * item.caseCost), 0);
-        const totalRevenue = cart.reduce((sum, item) => {
-          const pricing = calculatePricing(item);
-          return sum + (item.qty * pricing.revenuePerCase);
-        }, 0);
-        const totalProfit = cart.reduce((sum, item) => {
-          const pricing = calculatePricing(item);
-          return sum + (item.qty * pricing.profitPerCase);
-        }, 0);
+        const totalRevenue = cart.reduce((sum, item) => sum + (item.qty * calculatePricing(item).revenuePerCase), 0);
+        const totalProfit = cart.reduce((sum, item) => sum + (item.qty * calculatePricing(item).profitPerCase), 0);
         return { totalCases, totalBottles, totalCost, totalRevenue, totalProfit };
       }, [cart, markupPercent]);
 
@@ -356,10 +381,11 @@
         if (bottles === 0) return { status: 'empty', message: t.containerEmpty };
         if (bottles < CONTAINER_MIN) return { status: 'under', message: `${(CONTAINER_MIN - bottles).toLocaleString()} ${t.bottlesToMinimum}` };
         if (bottles <= CONTAINER_MAX) return { status: 'optimal', message: t.optimalLoad };
-        return { status: 'over', message: `${t.overBy} ${(bottles - CONTAINER_MAX).toLocaleString()} ${t.bottles}!` };
+        return { status: 'over', message: `${t.overBy} ${(bottles - CONTAINER_MAX).toLocaleString()}!` };
       }, [totals.totalBottles, t]);
 
-      const formatCurrency = (val) => `$${val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      const formatCurrency = (val) => `$${val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+      const formatCurrencyFull = (val) => `$${val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       const formatSize = (ml) => { if (!ml) return ''; const num = parseInt(ml); return num >= 1000 ? `${num/1000}L` : `${num}ml`; };
 
       const handleMarkupChange = (value) => {
@@ -368,26 +394,18 @@
         else if (value === '') setMarkupPercent(0);
       };
 
-      // Clean Language Selector
+      // Language Selector
       const LanguageSelector = () => (
-        <div className="flex items-center bg-slate-800/80 rounded-lg border border-slate-600 overflow-hidden">
+        <div className="flex bg-slate-800/80 rounded-lg border border-slate-600 overflow-hidden">
           {['en', 'fr', 'es'].map((lang, idx) => (
-            <button
-              key={lang}
-              onClick={() => setLanguage(lang)}
-              className={`px-4 py-2 text-sm font-semibold transition-all ${
-                language === lang 
-                  ? 'bg-amber-500 text-slate-900' 
-                  : 'text-slate-400 hover:text-white hover:bg-slate-700'
-              } ${idx > 0 ? 'border-l border-slate-600' : ''}`}
-            >
+            <button key={lang} onClick={() => setLanguage(lang)} className={`px-3 py-1.5 text-xs sm:text-sm font-semibold transition-all ${language === lang ? 'bg-amber-500 text-slate-900' : 'text-slate-400 hover:text-white'} ${idx > 0 ? 'border-l border-slate-600' : ''}`}>
               {lang.toUpperCase()}
             </button>
           ))}
         </div>
       );
 
-      // Container Gauge
+      // Container Gauge - Responsive
       const ContainerGauge = () => {
         const bottles = totals.totalBottles;
         const minPercent = (CONTAINER_MIN / CONTAINER_ABSOLUTE_MAX) * 100;
@@ -395,18 +413,19 @@
         const currentPercent = Math.min((bottles / CONTAINER_ABSOLUTE_MAX) * 100, 100);
         
         return (
-          <div className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+          <div className="bg-slate-800 rounded-xl p-3 sm:p-4 border border-slate-700">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <span className="text-blue-400"><Icons.Package /></span>
-                <span className="font-bold text-lg">{t.container20ft}</span>
+                <span className="font-bold text-sm sm:text-lg hidden xs:inline">{t.container20ft}</span>
+                <span className="font-bold text-sm xs:hidden">{t.containerShort}</span>
               </div>
               <div className="text-right">
-                <span className={`text-2xl font-bold ${containerStatus.status === 'optimal' ? 'text-green-400' : containerStatus.status === 'over' ? 'text-red-400' : containerStatus.status === 'under' ? 'text-blue-400' : 'text-slate-400'}`}>{bottles.toLocaleString()}</span>
-                <span className="text-slate-400 text-sm"> / {CONTAINER_MIN.toLocaleString()}-{CONTAINER_MAX.toLocaleString()}</span>
+                <span className={`text-xl sm:text-2xl font-bold ${containerStatus.status === 'optimal' ? 'text-green-400' : containerStatus.status === 'over' ? 'text-red-400' : containerStatus.status === 'under' ? 'text-blue-400' : 'text-slate-400'}`}>{bottles.toLocaleString()}</span>
+                <span className="text-slate-400 text-xs sm:text-sm"> / {CONTAINER_MIN.toLocaleString()}-{CONTAINER_MAX.toLocaleString()}</span>
               </div>
             </div>
-            <div className="relative h-8 bg-slate-700 rounded-lg overflow-hidden">
+            <div className="relative h-6 sm:h-8 bg-slate-700 rounded-lg overflow-hidden">
               <div className="absolute h-full bg-green-900/30 border-l-2 border-r-2 border-green-500/50" style={{ left: `${minPercent}%`, width: `${maxPercent - minPercent}%` }} />
               <div className={`h-full transition-all duration-300 ${containerStatus.status === 'optimal' ? 'bg-gradient-to-r from-green-600 to-green-500' : containerStatus.status === 'over' ? 'bg-gradient-to-r from-red-600 to-red-500' : containerStatus.status === 'under' ? 'bg-gradient-to-r from-blue-600 to-blue-500' : 'bg-slate-600'}`} style={{ width: `${currentPercent}%` }} />
               <div className="absolute inset-0 flex items-center text-xs font-bold">
@@ -414,7 +433,7 @@
                 <div className="absolute text-green-400" style={{ left: `${maxPercent}%`, transform: 'translateX(-50%)' }}><div className="bg-slate-800 px-1 rounded">9K</div></div>
               </div>
             </div>
-            <div className={`mt-2 text-center font-semibold ${containerStatus.status === 'optimal' ? 'text-green-400' : containerStatus.status === 'over' ? 'text-red-400' : containerStatus.status === 'under' ? 'text-blue-400' : 'text-slate-500'}`}>
+            <div className={`mt-1 text-center font-semibold text-sm ${containerStatus.status === 'optimal' ? 'text-green-400' : containerStatus.status === 'over' ? 'text-red-400' : containerStatus.status === 'under' ? 'text-blue-400' : 'text-slate-500'}`}>
               {containerStatus.status === 'optimal' && <Icons.Check />}
               {containerStatus.status === 'over' && <Icons.Alert />}
               {' '}{containerStatus.message}
@@ -423,22 +442,194 @@
         );
       };
 
+      // Mobile Product Card
+      const MobileProductCard = ({ product }) => {
+        const inCart = cart.find(item => item.codigo === product.codigo);
+        const colors = categoryColors[product.category];
+        const pricing = calculatePricing(product);
+        const currentQty = inCart?.qty || 0;
+
+        return (
+          <div className={`p-3 rounded-xl border transition ${inCart ? 'bg-amber-900/30 border-amber-500/60' : `${colors.bg} ${colors.border}`}`}>
+            <div className="flex justify-between items-start mb-2">
+              <div className="flex-1 min-w-0 pr-2">
+                <div className="flex items-center gap-1 mb-1 flex-wrap">
+                  <span className={`text-xs px-1.5 py-0.5 rounded ${colors.bg} ${colors.text} border ${colors.border}`}>{product.category}</span>
+                  <span className="text-xs text-slate-500">{formatSize(product.sizeMl)}</span>
+                </div>
+                <h3 className="font-semibold text-sm leading-tight line-clamp-2">{product.name}</h3>
+              </div>
+              <div className="text-right flex-shrink-0">
+                <p className="text-amber-400 font-bold">${product.caseCost}</p>
+                <p className="text-xs text-slate-400">{product.bottlesPerCase} {t.bottlesShort}</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between bg-slate-900/50 rounded-lg p-2">
+              <div className="text-xs">
+                <span className="text-green-400">+${pricing.profitPerCase.toFixed(0)}/{t.case.toLowerCase()}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                {currentQty > 0 && (
+                  <button onClick={() => updateQty(product.codigo, -1)} className="w-10 h-10 rounded-lg bg-red-600 active:bg-red-500 text-white flex items-center justify-center">
+                    <Icons.Minus />
+                  </button>
+                )}
+                {currentQty > 0 ? (
+                  <span className="w-12 text-center font-bold text-lg">{currentQty}</span>
+                ) : null}
+                <button onClick={() => addToCart(product, 1)} className="w-10 h-10 rounded-lg bg-green-600 active:bg-green-500 text-white flex items-center justify-center">
+                  <Icons.Plus />
+                </button>
+                {currentQty === 0 && (
+                  <button onClick={() => addToCart(product, 10)} className="w-10 h-10 rounded-lg bg-green-700 active:bg-green-600 text-white flex items-center justify-center text-sm font-bold">+10</button>
+                )}
+              </div>
+            </div>
+            {currentQty > 0 && (
+              <div className="mt-2 text-center text-xs text-slate-400">
+                {currentQty} × {product.bottlesPerCase} = <span className="text-white font-semibold">{(currentQty * product.bottlesPerCase).toLocaleString()} {t.bottlesShort}</span>
+                <span className="text-green-400 ml-2">+{formatCurrency(currentQty * pricing.profitPerCase)}</span>
+              </div>
+            )}
+          </div>
+        );
+      };
+
+      // Desktop Product Card
+      const DesktopProductCard = ({ product }) => {
+        const inCart = cart.find(item => item.codigo === product.codigo);
+        const colors = categoryColors[product.category];
+        const pricing = calculatePricing(product);
+        const currentQty = inCart?.qty || 0;
+
+        return (
+          <div className={`p-3 rounded-xl border transition ${inCart ? 'bg-amber-900/30 border-amber-500/60 ring-2 ring-amber-500/30' : `${colors.bg} ${colors.border}`}`}>
+            <div className="flex gap-3 items-center">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <span className={`text-xs px-2 py-0.5 rounded-full ${colors.bg} ${colors.text} border ${colors.border}`}>{product.category}</span>
+                  <span className="text-xs text-slate-500">{formatSize(product.sizeMl)}</span>
+                  <span className="text-xs text-slate-500">{product.abv}%</span>
+                  {inCart && <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500 text-slate-900 font-bold">{inCart.qty} × {product.bottlesPerCase} = {(inCart.qty * product.bottlesPerCase).toLocaleString()}</span>}
+                </div>
+                <h3 className="font-semibold leading-tight truncate">{product.name}</h3>
+                <p className="text-xs text-slate-400 truncate">{product.internalCode}</p>
+              </div>
+              <div className="flex gap-1.5 text-center text-xs flex-shrink-0">
+                <div className="w-16 px-1 py-1.5 bg-slate-900/50 rounded-lg"><p className="text-slate-500">{t.caseCost}</p><p className="font-bold text-amber-400">${product.caseCost}</p></div>
+                <div className="w-14 px-1 py-1.5 bg-slate-900/50 rounded-lg"><p className="text-slate-500">{t.btlPerCase}</p><p className="font-bold">{product.bottlesPerCase}</p></div>
+                <div className="w-16 px-1 py-1.5 bg-green-900/30 rounded-lg border border-green-500/30"><p className="text-green-400">{t.resalePerBtl}</p><p className="font-bold text-green-400">${pricing.resalePrice.toFixed(2)}</p></div>
+                <div className="w-16 px-1 py-1.5 bg-green-900/30 rounded-lg border border-green-500/30"><p className="text-green-400">{t.profitPerCase}</p><p className="font-bold text-green-400">${pricing.profitPerCase.toFixed(0)}</p></div>
+              </div>
+              <div className="flex flex-col gap-1 w-48">
+                <div className="flex items-center gap-1">
+                  {currentQty > 0 ? (
+                    <>
+                      <button onClick={() => updateQty(product.codigo, -10)} className="w-9 h-9 rounded-lg bg-red-700 hover:bg-red-600 text-white font-bold text-sm">-10</button>
+                      <button onClick={() => updateQty(product.codigo, -1)} className="w-8 h-9 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold">-1</button>
+                      <input type="number" value={currentQty} onChange={(e) => setQty(product.codigo, e.target.value)} className="w-12 h-9 text-center bg-slate-800 border-2 border-amber-500 rounded-lg font-bold focus:outline-none" min="0" />
+                      <button onClick={() => updateQty(product.codigo, 1)} className="w-8 h-9 rounded-lg bg-green-600 hover:bg-green-500 text-white font-bold">+1</button>
+                      <button onClick={() => updateQty(product.codigo, 10)} className="w-9 h-9 rounded-lg bg-green-700 hover:bg-green-600 text-white font-bold text-sm">+10</button>
+                    </>
+                  ) : (
+                    <>
+                      <button onClick={() => addToCart(product, 1)} className="flex-1 h-10 bg-green-600 hover:bg-green-500 text-white font-bold rounded-lg">+1</button>
+                      <button onClick={() => addToCart(product, 10)} className="flex-1 h-10 bg-green-700 hover:bg-green-600 text-white font-bold rounded-lg">+10</button>
+                    </>
+                  )}
+                </div>
+                {currentQty > 0 && (
+                  <div className="text-center text-xs">
+                    <span className="text-slate-400">= {(currentQty * product.bottlesPerCase).toLocaleString()} btls</span>
+                    <span className="text-green-400 ml-1">+{formatCurrency(currentQty * pricing.profitPerCase)}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // Mobile Cart Panel
+      const MobileCartPanel = () => (
+        <div className={`fixed inset-x-0 bottom-0 z-50 transition-transform duration-300 ${showMobileCart ? 'translate-y-0' : 'translate-y-full'}`}>
+          <div className="bg-slate-800 border-t border-slate-700 rounded-t-2xl max-h-[70vh] overflow-hidden flex flex-col safe-bottom">
+            <div className="p-3 border-b border-slate-700 flex justify-between items-center flex-shrink-0">
+              <h2 className="font-bold flex items-center gap-2"><Icons.ShoppingCart /> {t.cart} ({cart.length})</h2>
+              <button onClick={() => setShowMobileCart(false)} className="p-2 text-slate-400"><Icons.X /></button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-3 space-y-2">
+              {cart.length === 0 ? (
+                <p className="text-center text-slate-500 py-8">{t.emptyCart}</p>
+              ) : cart.map(item => {
+                const pricing = calculatePricing(item);
+                return (
+                  <div key={item.codigo} className="flex items-center gap-2 bg-slate-900/50 rounded-lg p-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{item.name}</p>
+                      <p className="text-xs text-slate-400">{item.qty} × {item.bottlesPerCase} = {(item.qty * item.bottlesPerCase).toLocaleString()}</p>
+                    </div>
+                    <p className="text-green-400 text-sm font-semibold">+{formatCurrency(item.qty * pricing.profitPerCase)}</p>
+                    <button onClick={() => removeFromCart(item.codigo)} className="p-2 text-red-400"><Icons.Trash /></button>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="p-3 border-t border-slate-700 bg-slate-800 flex-shrink-0">
+              <div className="grid grid-cols-3 gap-2 mb-3 text-center text-sm">
+                <div><p className="text-slate-400">{t.totalCases}</p><p className="font-bold text-lg">{totals.totalCases}</p></div>
+                <div><p className="text-slate-400">{t.totalBottles}</p><p className={`font-bold text-lg ${containerStatus.status === 'optimal' ? 'text-green-400' : containerStatus.status === 'over' ? 'text-red-400' : ''}`}>{totals.totalBottles.toLocaleString()}</p></div>
+                <div><p className="text-green-400">{t.profit}</p><p className="font-bold text-lg text-green-400">{formatCurrency(totals.totalProfit)}</p></div>
+              </div>
+              <button onClick={() => { setShowMobileCart(false); setShowPO(true); }} disabled={cart.length === 0} className={`w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 ${cart.length === 0 ? 'bg-slate-700 text-slate-500' : 'bg-green-500 text-white'}`}>
+                <Icons.FileText /> {t.generatePO}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+
       // Purchase Order View
       if (showPO) {
         return (
-          <div className="min-h-screen bg-gray-100 p-4 print:p-0 print:bg-white">
-            <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-8 print:shadow-none">
-              <div className="flex justify-between items-start mb-6 border-b pb-4">
-                <div><h1 className="text-3xl font-bold text-gray-800">{t.purchaseOrder}</h1><p className="text-lg text-gray-600 font-mono">{poInfo.poNumber}</p></div>
-                <button onClick={() => setShowPO(false)} className="no-print px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 flex items-center gap-2"><Icons.X /> {t.close}</button>
+          <div className="min-h-screen bg-gray-100 p-2 sm:p-4 print:p-0 print:bg-white">
+            <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-4 sm:p-8 print:shadow-none">
+              <div className="flex justify-between items-start mb-4 sm:mb-6 border-b pb-4">
+                <div>
+                  <h1 className="text-xl sm:text-3xl font-bold text-gray-800">{t.purchaseOrder}</h1>
+                  <p className="text-sm sm:text-lg text-gray-600 font-mono">{poInfo.poNumber}</p>
+                </div>
+                <button onClick={() => setShowPO(false)} className="no-print p-2 sm:px-4 sm:py-2 bg-gray-200 rounded-lg hover:bg-gray-300 flex items-center gap-1 sm:gap-2">
+                  <Icons.X /> <span className="hidden sm:inline">{t.close}</span>
+                </button>
               </div>
-              <div className="grid grid-cols-4 gap-4 mb-6 text-sm">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6 text-sm">
                 <div><p className="text-gray-500">{t.date}</p><p className="font-medium">{poInfo.date}</p></div>
                 <div><p className="text-gray-500">{t.vendor}</p><p className="font-medium">{poInfo.vendor || '—'}</p></div>
                 <div><p className="text-gray-500">{t.pricingTier}</p><p className="font-medium text-green-600">{markupPercent}%</p></div>
-                <div><p className="text-gray-500">{t.container20ft}</p><p className="font-medium">{totals.totalBottles.toLocaleString()} {t.bottles}</p></div>
+                <div><p className="text-gray-500">{t.totalBottles}</p><p className="font-medium">{totals.totalBottles.toLocaleString()}</p></div>
               </div>
-              <table className="w-full mb-6 text-sm">
+              
+              {/* Mobile Table */}
+              <div className="sm:hidden space-y-2 mb-4">
+                {cart.map(item => {
+                  const pricing = calculatePricing(item);
+                  return (
+                    <div key={item.codigo} className="bg-gray-50 rounded-lg p-3">
+                      <p className="font-medium text-sm">{item.name}</p>
+                      <div className="grid grid-cols-3 gap-2 mt-2 text-xs">
+                        <div><span className="text-gray-500">{t.cases}:</span> <span className="font-semibold">{item.qty}</span></div>
+                        <div><span className="text-gray-500">{t.totalBtls}:</span> <span className="font-semibold text-blue-600">{item.qty * item.bottlesPerCase}</span></div>
+                        <div><span className="text-gray-500">{t.profitCol}:</span> <span className="font-semibold text-green-600">{formatCurrency(item.qty * pricing.profitPerCase)}</span></div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Desktop Table */}
+              <table className="hidden sm:table w-full mb-6 text-sm">
                 <thead><tr className="border-b-2 border-gray-300 bg-gray-50"><th className="text-left py-2 px-2">{t.internalCode}</th><th className="text-left py-2 px-2">{t.product}</th><th className="text-center py-2 px-2">{t.size}</th><th className="text-center py-2 px-2">{t.cases}</th><th className="text-center py-2 px-2">{t.btlPerCase}</th><th className="text-center py-2 px-2">{t.totalBtls}</th><th className="text-right py-2 px-2">{t.ourCost}</th><th className="text-right py-2 px-2">{t.resalePerBtl}</th><th className="text-right py-2 px-2">{t.revenueCol}</th><th className="text-right py-2 px-2">{t.profitCol}</th></tr></thead>
                 <tbody>
                   {cart.map((item, idx) => {
@@ -446,95 +637,60 @@
                     return (
                       <tr key={item.codigo} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                         <td className="py-2 px-2 font-mono text-xs">{item.internalCode}</td>
-                        <td className="py-2 px-2"><div className="font-medium">{item.name}</div><div className="text-xs text-gray-500">{item.category} • {item.abv}%</div></td>
+                        <td className="py-2 px-2"><div className="font-medium">{item.name}</div></td>
                         <td className="py-2 px-2 text-center">{formatSize(item.sizeMl)}</td>
                         <td className="py-2 px-2 text-center font-semibold">{item.qty}</td>
                         <td className="py-2 px-2 text-center">{item.bottlesPerCase}</td>
                         <td className="py-2 px-2 text-center font-semibold text-blue-600">{item.qty * item.bottlesPerCase}</td>
-                        <td className="py-2 px-2 text-right">{formatCurrency(item.qty * item.caseCost)}</td>
-                        <td className="py-2 px-2 text-right">{formatCurrency(pricing.resalePrice)}</td>
-                        <td className="py-2 px-2 text-right">{formatCurrency(item.qty * pricing.revenuePerCase)}</td>
-                        <td className="py-2 px-2 text-right font-semibold text-green-600">{formatCurrency(item.qty * pricing.profitPerCase)}</td>
+                        <td className="py-2 px-2 text-right">{formatCurrencyFull(item.qty * item.caseCost)}</td>
+                        <td className="py-2 px-2 text-right">{formatCurrencyFull(pricing.resalePrice)}</td>
+                        <td className="py-2 px-2 text-right">{formatCurrencyFull(item.qty * pricing.revenuePerCase)}</td>
+                        <td className="py-2 px-2 text-right font-semibold text-green-600">{formatCurrencyFull(item.qty * pricing.profitPerCase)}</td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
+              
               <div className="flex justify-end">
-                <div className="w-80 space-y-2 text-sm">
+                <div className="w-full sm:w-80 space-y-2 text-sm">
                   <div className="flex justify-between py-1"><span className="text-gray-600">{t.totalCases}:</span><span className="font-medium">{totals.totalCases}</span></div>
                   <div className="flex justify-between py-1"><span className="text-gray-600">{t.totalBottles}:</span><span className="font-medium">{totals.totalBottles.toLocaleString()}</span></div>
-                  <div className="flex justify-between py-2 border-t"><span className="text-gray-600">{t.ourCost}:</span><span className="font-semibold">{formatCurrency(totals.totalCost)}</span></div>
-                  <div className="flex justify-between py-2 border-t"><span className="text-gray-600">{t.revenue} ({markupPercent}%):</span><span className="font-semibold">{formatCurrency(totals.totalRevenue)}</span></div>
-                  <div className="flex justify-between py-3 border-t-2 border-gray-800"><span className="text-lg font-bold">{t.totalProfit}:</span><span className="text-lg font-bold text-green-600">{formatCurrency(totals.totalProfit)}</span></div>
-                  <div className="flex justify-between py-1 text-xs text-gray-500"><span>{t.roi}:</span><span>{totals.totalCost > 0 ? ((totals.totalProfit / totals.totalCost) * 100).toFixed(1) : 0}%</span></div>
+                  <div className="flex justify-between py-2 border-t"><span className="text-gray-600">{t.ourCost}:</span><span className="font-semibold">{formatCurrencyFull(totals.totalCost)}</span></div>
+                  <div className="flex justify-between py-2 border-t"><span className="text-gray-600">{t.revenue} ({markupPercent}%):</span><span className="font-semibold">{formatCurrencyFull(totals.totalRevenue)}</span></div>
+                  <div className="flex justify-between py-3 border-t-2 border-gray-800"><span className="text-lg font-bold">{t.totalProfit}:</span><span className="text-lg font-bold text-green-600">{formatCurrencyFull(totals.totalProfit)}</span></div>
                 </div>
               </div>
-              {poInfo.notes && <div className="mt-6 p-4 bg-gray-50 rounded-lg border"><p className="text-sm text-gray-600">{poInfo.notes}</p></div>}
-              <div className="mt-6 pt-4 border-t no-print"><button onClick={() => window.print()} className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"><Icons.Printer /> {t.printSavePdf}</button></div>
+              <div className="mt-4 sm:mt-6 pt-4 border-t no-print">
+                <button onClick={() => window.print()} className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+                  <Icons.Printer /> {t.printSavePdf}
+                </button>
+              </div>
             </div>
           </div>
         );
       }
 
-      // Quantity Controls - Fixed width
-      const QuantityControls = ({ product, inCart }) => {
-        const currentQty = inCart?.qty || 0;
-        const pricing = calculatePricing(product);
-
-        if (!inCart) {
-          return (
-            <div className="flex flex-col items-center gap-1 w-36">
-              <span className="text-xs text-amber-400 font-bold uppercase tracking-wide">{t.addCases}</span>
-              <div className="flex gap-1">
-                <button onClick={() => addToCart(product, 1)} className="w-16 h-12 bg-green-600 hover:bg-green-500 text-white font-bold rounded-lg transition flex flex-col items-center justify-center leading-tight">
-                  <span className="text-xl">+1</span>
-                </button>
-                <button onClick={() => addToCart(product, 10)} className="w-16 h-12 bg-green-700 hover:bg-green-600 text-white font-bold rounded-lg transition flex flex-col items-center justify-center leading-tight">
-                  <span className="text-xl">+10</span>
-                </button>
-              </div>
-            </div>
-          );
-        }
-
-        return (
-          <div className="flex flex-col gap-1 w-52">
-            <span className="text-xs text-amber-400 font-bold uppercase tracking-wide text-center">{t.adjustCases}</span>
-            <div className="flex items-center gap-1">
-              <button onClick={() => updateQty(product.codigo, -10)} className="w-10 h-10 rounded-lg bg-red-700 hover:bg-red-600 text-white font-bold flex items-center justify-center transition">-10</button>
-              <button onClick={() => updateQty(product.codigo, -1)} className="w-8 h-10 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold transition">-1</button>
-              <input type="number" value={currentQty} onChange={(e) => setQty(product.codigo, e.target.value)} className="w-14 h-10 text-center bg-slate-800 border-2 border-amber-500 rounded-lg font-bold text-lg focus:outline-none" min="0" />
-              <button onClick={() => updateQty(product.codigo, 1)} className="w-8 h-10 rounded-lg bg-green-600 hover:bg-green-500 text-white font-bold transition">+1</button>
-              <button onClick={() => updateQty(product.codigo, 10)} className="w-10 h-10 rounded-lg bg-green-700 hover:bg-green-600 text-white font-bold transition">+10</button>
-            </div>
-            <div className="text-center text-xs">
-              <span className="text-slate-400">= {(currentQty * product.bottlesPerCase).toLocaleString()} btls</span>
-              <span className="text-green-400 ml-2">+{formatCurrency(currentQty * pricing.profitPerCase)}</span>
-            </div>
-          </div>
-        );
-      };
-
       // Main View
       return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-          <div className="max-w-7xl mx-auto p-4">
+        <div className="min-h-screen min-h-screen-ios bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white pb-20 lg:pb-4">
+          <div className="max-w-7xl mx-auto p-2 sm:p-4">
             {/* Header */}
-            <div className="flex items-center justify-between mb-3 flex-wrap gap-3">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-900"><Icons.Wine /></div>
-                <div>
-                  <h1 className="text-2xl font-bold">{t.appTitle}</h1>
-                  <p className="text-slate-400 text-sm">{productData.length} {t.products} • {CONTAINER_MIN.toLocaleString()}-{CONTAINER_MAX.toLocaleString()} {t.bottles}</p>
+            <div className="flex items-center justify-between mb-2 sm:mb-3 gap-2">
+              <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-900 flex-shrink-0"><Icons.Wine /></div>
+                <div className="min-w-0">
+                  <h1 className="text-lg sm:text-2xl font-bold truncate">{window.innerWidth < 480 ? t.appTitleShort : t.appTitle}</h1>
+                  <p className="text-slate-400 text-xs sm:text-sm">{productData.length} {t.products}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-2 flex-shrink-0">
                 <LanguageSelector />
-                <div className="flex items-center gap-2">
-                  <div className="text-center px-3 py-2 bg-slate-800 rounded-lg min-w-16"><p className="text-xs text-slate-400">{t.cases}</p><p className="text-xl font-bold text-amber-400">{totals.totalCases}</p></div>
-                  <div className="text-center px-3 py-2 bg-slate-800 rounded-lg min-w-24"><p className="text-xs text-slate-400">{t.cost}</p><p className="text-xl font-bold">{formatCurrency(totals.totalCost)}</p></div>
-                  <div className="text-center px-3 py-2 bg-green-900/50 rounded-lg border border-green-500/30 min-w-24"><p className="text-xs text-green-400">{t.profit}</p><p className="text-xl font-bold text-green-400">{formatCurrency(totals.totalProfit)}</p></div>
+                {/* Desktop Stats */}
+                <div className="hidden md:flex items-center gap-2">
+                  <div className="text-center px-3 py-2 bg-slate-800 rounded-lg"><p className="text-xs text-slate-400">{t.totalCases}</p><p className="text-xl font-bold text-amber-400">{totals.totalCases}</p></div>
+                  <div className="text-center px-3 py-2 bg-slate-800 rounded-lg"><p className="text-xs text-slate-400">{t.cost}</p><p className="text-xl font-bold">{formatCurrency(totals.totalCost)}</p></div>
+                  <div className="text-center px-3 py-2 bg-green-900/50 rounded-lg border border-green-500/30"><p className="text-xs text-green-400">{t.profit}</p><p className="text-xl font-bold text-green-400">{formatCurrency(totals.totalProfit)}</p></div>
                 </div>
               </div>
             </div>
@@ -542,81 +698,56 @@
             <ContainerGauge />
 
             {/* Markup Selector */}
-            <div className="my-3 p-4 bg-slate-800/50 rounded-xl border border-slate-700">
-              <div className="flex items-center justify-between flex-wrap gap-4">
-                <div className="flex items-center gap-4 flex-wrap">
-                  <div className="flex items-center gap-2">
-                    <span className="text-green-400"><Icons.Percent /></span>
-                    <span className="text-sm text-slate-300 font-semibold">{t.markup}:</span>
+            <div className="my-2 sm:my-3 p-3 sm:p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+              <div className="flex items-center justify-between flex-wrap gap-2 sm:gap-4">
+                <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+                  <span className="text-sm text-slate-300 font-semibold">{t.markup}:</span>
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <input type="number" value={markupPercent} onChange={(e) => handleMarkupChange(e.target.value)} className="w-16 sm:w-20 h-10 sm:h-12 text-center bg-slate-900 border-2 border-green-500 rounded-xl font-bold text-xl sm:text-2xl text-green-400 focus:outline-none" min="0" max="999" step="0.1" />
+                    <span className="text-xl sm:text-2xl font-bold text-green-400">%</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <input type="number" value={markupPercent} onChange={(e) => handleMarkupChange(e.target.value)} className="w-24 h-12 text-center bg-slate-900 border-2 border-green-500 rounded-xl font-bold text-2xl text-green-400 focus:outline-none focus:border-green-400" min="0" max="999" step="0.1" />
-                    <span className="text-2xl font-bold text-green-400">%</span>
-                  </div>
-                  <div className="flex gap-2 ml-2">
-                    <span className="text-xs text-slate-500 self-center mr-1">{t.quick}:</span>
+                  <div className="flex gap-1 sm:gap-2">
                     {presetMarkups.map(preset => (
-                      <button key={preset} onClick={() => setMarkupPercent(preset)} className={`w-14 py-2 rounded-lg font-bold transition text-sm ${markupPercent === preset ? 'bg-green-500 text-white ring-2 ring-green-400' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}`}>{preset}%</button>
+                      <button key={preset} onClick={() => setMarkupPercent(preset)} className={`w-12 sm:w-14 py-2 rounded-lg font-bold text-sm transition ${markupPercent === preset ? 'bg-green-500 text-white' : 'bg-slate-700 text-slate-300'}`}>{preset}%</button>
                     ))}
                   </div>
                 </div>
-                {cart.length > 0 && <button onClick={() => setCart([])} className="text-sm text-red-400 hover:text-red-300 px-3 py-2 rounded border border-red-500/30 hover:bg-red-500/10">{t.clearAll} ({cart.length})</button>}
-              </div>
-              <div className="mt-3 pt-3 border-t border-slate-700/50 flex items-center gap-6 text-sm flex-wrap">
-                <span className="text-slate-400">{t.preview}:</span>
-                <span className="text-slate-300">$100 → <span className="text-green-400 font-bold">${(100 * (1 + markupPercent/100)).toFixed(2)}</span> {t.resale}</span>
-                <span className="text-slate-300">{t.profit}: <span className="text-green-400 font-bold">${(100 * markupPercent/100).toFixed(2)}</span> {t.profitPerBottle}</span>
+                {cart.length > 0 && <button onClick={() => setCart([])} className="text-sm text-red-400 px-2 py-1 rounded border border-red-500/30">{t.clearAll} ({cart.length})</button>}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4">
               {/* Products */}
-              <div className="lg:col-span-2 space-y-3">
-                <div className="flex flex-wrap gap-3">
-                  <div className="flex-1 min-w-48 relative">
+              <div className="lg:col-span-2 space-y-2 sm:space-y-3">
+                {/* Search & Filter */}
+                <div className="flex gap-2">
+                  <div className="flex-1 relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"><Icons.Search /></span>
                     <input type="text" placeholder={t.searchProducts} value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl focus:outline-none focus:border-amber-400" />
                   </div>
-                  <div className="flex bg-slate-800/80 rounded-xl p-1 border border-slate-700">
-                    {['All', 'CHAMPAGNE', 'ESPUMANTE', 'COGNAC', 'WHISKY'].map(cat => (
-                      <button key={cat} onClick={() => setCategory(cat)} className={`px-3 py-1.5 text-sm rounded-lg font-medium transition whitespace-nowrap ${category === cat ? 'bg-amber-500 text-slate-900' : 'text-slate-400 hover:text-white'}`}>{getCategoryLabel(cat)}</button>
-                    ))}
-                  </div>
                 </div>
-                <div className="space-y-2 max-h-[calc(100vh-420px)] overflow-y-auto pr-2 scrollbar-thin">
-                  {filteredProducts.map(product => {
-                    const inCart = cart.find(item => item.codigo === product.codigo);
-                    const colors = categoryColors[product.category] || categoryColors.WHISKY;
-                    const pricing = calculatePricing(product);
-                    return (
-                      <div key={product.codigo} className={`p-3 rounded-xl border transition ${inCart ? 'bg-amber-900/30 border-amber-500/60 ring-2 ring-amber-500/30' : `${colors.bg} ${colors.border}`}`}>
-                        <div className="flex gap-3 items-center">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1 flex-wrap">
-                              <span className={`text-xs px-2 py-0.5 rounded-full ${colors.bg} ${colors.text} border ${colors.border}`}>{product.category}</span>
-                              <span className="text-xs text-slate-500">{formatSize(product.sizeMl)}</span>
-                              <span className="text-xs text-slate-500">{product.abv}%</span>
-                              {inCart && <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500 text-slate-900 font-bold">{inCart.qty} × {product.bottlesPerCase} = {(inCart.qty * product.bottlesPerCase).toLocaleString()}</span>}
-                            </div>
-                            <h3 className="font-semibold leading-tight truncate">{product.name}</h3>
-                            <p className="text-xs text-slate-400 truncate">{product.internalCode}</p>
-                          </div>
-                          <div className="flex gap-1.5 text-center text-xs flex-shrink-0">
-                            <div className="w-16 px-1 py-1.5 bg-slate-900/50 rounded-lg"><p className="text-slate-500 truncate">{t.caseCost}</p><p className="font-bold text-amber-400">${product.caseCost}</p></div>
-                            <div className="w-14 px-1 py-1.5 bg-slate-900/50 rounded-lg"><p className="text-slate-500 truncate">{t.btlPerCase}</p><p className="font-bold">{product.bottlesPerCase}</p></div>
-                            <div className="w-16 px-1 py-1.5 bg-green-900/30 rounded-lg border border-green-500/30"><p className="text-green-400 truncate">{t.resalePerBtl}</p><p className="font-bold text-green-400">${pricing.resalePrice.toFixed(2)}</p></div>
-                            <div className="w-16 px-1 py-1.5 bg-green-900/30 rounded-lg border border-green-500/30"><p className="text-green-400 truncate">{t.profitPerCase}</p><p className="font-bold text-green-400">${pricing.profitPerCase.toFixed(2)}</p></div>
-                          </div>
-                          <QuantityControls product={product} inCart={inCart} />
-                        </div>
-                      </div>
-                    );
-                  })}
+                {/* Category Filter - Scrollable on mobile */}
+                <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-thin">
+                  {['All', 'CHAMPAGNE', 'ESPUMANTE', 'COGNAC', 'WHISKY'].map(cat => (
+                    <button key={cat} onClick={() => setCategory(cat)} className={`px-3 py-1.5 text-sm rounded-lg font-medium transition whitespace-nowrap flex-shrink-0 ${category === cat ? 'bg-amber-500 text-slate-900' : 'bg-slate-800 text-slate-400'}`}>{getCategoryLabel(cat)}</button>
+                  ))}
+                </div>
+                
+                {/* Product List */}
+                <div className="space-y-2 max-h-[calc(100vh-380px)] sm:max-h-[calc(100vh-400px)] overflow-y-auto pr-1 scrollbar-thin">
+                  {/* Mobile Cards */}
+                  <div className="lg:hidden space-y-2">
+                    {filteredProducts.map(product => <MobileProductCard key={product.codigo} product={product} />)}
+                  </div>
+                  {/* Desktop Cards */}
+                  <div className="hidden lg:block space-y-2">
+                    {filteredProducts.map(product => <DesktopProductCard key={product.codigo} product={product} />)}
+                  </div>
                 </div>
               </div>
 
-              {/* Cart Sidebar */}
-              <div className="space-y-3">
+              {/* Desktop Cart Sidebar */}
+              <div className="hidden lg:block space-y-3">
                 <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
                   <h2 className="font-semibold mb-3 flex items-center gap-2"><span className="text-amber-400"><Icons.FileText /></span> {t.orderInfo}</h2>
                   <div className="space-y-2">
@@ -629,7 +760,7 @@
                   <div className="p-3 border-b border-slate-700"><h2 className="font-semibold flex items-center gap-2"><span className="text-amber-400"><Icons.ShoppingCart /></span> {t.cart} ({cart.length})</h2></div>
                   <div className="max-h-40 overflow-y-auto scrollbar-thin">
                     {cart.length === 0 ? (
-                      <div className="p-6 text-center text-slate-500"><span className="opacity-30"><Icons.Package /></span><p className="text-sm mt-2">{t.emptyCart}</p></div>
+                      <div className="p-6 text-center text-slate-500">{t.emptyCart}</div>
                     ) : (
                       <div className="divide-y divide-slate-700/50">
                         {cart.map(item => {
@@ -637,7 +768,7 @@
                           return (
                             <div key={item.codigo} className="p-2 flex items-center gap-2 hover:bg-slate-700/20">
                               <div className="flex-1 min-w-0"><p className="font-medium text-sm truncate">{item.name}</p><p className="text-xs text-slate-400">{item.qty} × {item.bottlesPerCase} = {(item.qty*item.bottlesPerCase).toLocaleString()}</p></div>
-                              <div className="text-right text-xs"><p className="text-green-400 font-semibold">+{formatCurrency(item.qty * pricing.profitPerCase)}</p></div>
+                              <p className="text-green-400 text-xs font-semibold">+{formatCurrency(item.qty * pricing.profitPerCase)}</p>
                               <button onClick={() => removeFromCart(item.codigo)} className="p-1 text-slate-500 hover:text-red-400"><Icons.Trash /></button>
                             </div>
                           );
@@ -659,12 +790,34 @@
                   </div>
                 </div>
                 <textarea value={poInfo.notes} onChange={(e) => setPoInfo({...poInfo, notes: e.target.value})} placeholder={t.orderNotes} rows={2} className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm resize-none" />
-                <button onClick={() => setShowPO(true)} disabled={cart.length === 0} className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition ${cart.length === 0 ? 'bg-slate-700 text-slate-500 cursor-not-allowed' : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 text-white shadow-lg shadow-green-500/20'}`}>
+                <button onClick={() => setShowPO(true)} disabled={cart.length === 0} className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition ${cart.length === 0 ? 'bg-slate-700 text-slate-500' : 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg shadow-green-500/20'}`}>
                   <Icons.FileText /> {t.generatePO}
                 </button>
               </div>
             </div>
           </div>
+
+          {/* Mobile Bottom Bar */}
+          <div className="lg:hidden fixed bottom-0 inset-x-0 bg-slate-900 border-t border-slate-700 p-2 safe-bottom z-40">
+            <div className="flex items-center gap-2">
+              <div className="flex-1 grid grid-cols-3 gap-1 text-center text-xs">
+                <div><p className="text-slate-500">{t.totalCases}</p><p className="font-bold text-amber-400">{totals.totalCases}</p></div>
+                <div><p className="text-slate-500">{t.totalBottles}</p><p className={`font-bold ${containerStatus.status === 'optimal' ? 'text-green-400' : containerStatus.status === 'over' ? 'text-red-400' : ''}`}>{totals.totalBottles.toLocaleString()}</p></div>
+                <div><p className="text-green-400">{t.profit}</p><p className="font-bold text-green-400">{formatCurrency(totals.totalProfit)}</p></div>
+              </div>
+              <button onClick={() => setShowMobileCart(true)} className={`px-4 py-3 rounded-xl font-bold flex items-center gap-2 ${cart.length === 0 ? 'bg-slate-700 text-slate-500' : 'bg-green-500 text-white'}`}>
+                <Icons.ShoppingCart />
+                <span className="hidden xs:inline">{t.viewCart}</span>
+                {cart.length > 0 && <span className="bg-white/20 px-2 py-0.5 rounded-full text-sm">{cart.length}</span>}
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Cart Panel */}
+          <MobileCartPanel />
+          
+          {/* Overlay */}
+          {showMobileCart && <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setShowMobileCart(false)} />}
         </div>
       );
     }
