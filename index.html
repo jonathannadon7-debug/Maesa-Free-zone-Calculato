@@ -28,55 +28,226 @@
   <script type="text/babel">
     const { useState, useMemo } = React;
 
+    // ==================== TRANSLATIONS ====================
+    const translations = {
+      en: {
+        appTitle: "Container Order Builder",
+        products: "Products",
+        container20ft: "20ft Container",
+        bottles: "bottles",
+        containerEmpty: "Container empty",
+        bottlesToMinimum: "bottles to minimum",
+        optimalLoad: "Optimal container load!",
+        overBy: "Over by",
+        markup: "MARKUP",
+        quick: "Quick",
+        preview: "Preview",
+        cost: "Cost",
+        resale: "resale",
+        profitPerBottle: "per bottle",
+        caseCost: "Case Cost",
+        btlPerCase: "Btl/Case",
+        resalePerBtl: "Resale/Btl",
+        profitPerCase: "Profit/Case",
+        addCases: "Add Cases",
+        adjustCases: "Adjust Cases",
+        case: "CASE",
+        cases: "CASES",
+        orderInfo: "Order Info",
+        poNumber: "PO Number",
+        vendor: "Vendor",
+        vendorPlaceholder: "Vendor name",
+        date: "Date",
+        cart: "Cart",
+        emptyCart: "Empty cart",
+        orderNotes: "Order notes...",
+        totalCases: "Total Cases",
+        totalBottles: "Total Bottles",
+        ourCost: "Our Cost",
+        revenue: "Revenue",
+        profit: "PROFIT",
+        roi: "ROI",
+        purchaseOrder: "PURCHASE ORDER",
+        close: "Close",
+        pricingTier: "Markup",
+        internalCode: "Internal Code",
+        product: "Product",
+        size: "Size",
+        totalBtls: "Total Btls",
+        revenueCol: "Revenue",
+        profitCol: "Profit",
+        totalProfit: "TOTAL PROFIT",
+        printSavePdf: "Print / Save PDF",
+        generatePO: "Generate Purchase Order",
+        all: "All",
+        champagne: "Champagne",
+        espumante: "Espumante",
+        cognac: "Cognac",
+        whisky: "Whisky",
+        searchProducts: "Search products...",
+        clearAll: "Clear All",
+      },
+      fr: {
+        appTitle: "Constructeur de Commande",
+        products: "Produits",
+        container20ft: "Container 20 pieds",
+        bottles: "bouteilles",
+        containerEmpty: "Container vide",
+        bottlesToMinimum: "bout. pour minimum",
+        optimalLoad: "Chargement optimal!",
+        overBy: "Excès de",
+        markup: "MARGE",
+        quick: "Rapide",
+        preview: "Aperçu",
+        cost: "Coût",
+        resale: "revente",
+        profitPerBottle: "par bouteille",
+        caseCost: "Prix Caisse",
+        btlPerCase: "Btl/Caisse",
+        resalePerBtl: "Revente/Btl",
+        profitPerCase: "Profit/Caisse",
+        addCases: "Ajouter",
+        adjustCases: "Ajuster",
+        case: "CAISSE",
+        cases: "CAISSES",
+        orderInfo: "Info Commande",
+        poNumber: "N° Commande",
+        vendor: "Fournisseur",
+        vendorPlaceholder: "Nom fournisseur",
+        date: "Date",
+        cart: "Panier",
+        emptyCart: "Panier vide",
+        orderNotes: "Notes...",
+        totalCases: "Total Caisses",
+        totalBottles: "Total Bouteilles",
+        ourCost: "Notre Coût",
+        revenue: "Revenu",
+        profit: "PROFIT",
+        roi: "ROI",
+        purchaseOrder: "BON DE COMMANDE",
+        close: "Fermer",
+        pricingTier: "Marge",
+        internalCode: "Code Interne",
+        product: "Produit",
+        size: "Taille",
+        totalBtls: "Total Btls",
+        revenueCol: "Revenu",
+        profitCol: "Profit",
+        totalProfit: "PROFIT TOTAL",
+        printSavePdf: "Imprimer / PDF",
+        generatePO: "Générer Bon de Commande",
+        all: "Tous",
+        champagne: "Champagne",
+        espumante: "Espumante",
+        cognac: "Cognac",
+        whisky: "Whisky",
+        searchProducts: "Rechercher...",
+        clearAll: "Effacer",
+      },
+      es: {
+        appTitle: "Constructor de Pedidos",
+        products: "Productos",
+        container20ft: "Contenedor 20 pies",
+        bottles: "botellas",
+        containerEmpty: "Contenedor vacío",
+        bottlesToMinimum: "bot. para mínimo",
+        optimalLoad: "¡Carga óptima!",
+        overBy: "Exceso de",
+        markup: "MARGEN",
+        quick: "Rápido",
+        preview: "Vista",
+        cost: "Costo",
+        resale: "reventa",
+        profitPerBottle: "por botella",
+        caseCost: "Costo Caja",
+        btlPerCase: "Btl/Caja",
+        resalePerBtl: "Reventa/Btl",
+        profitPerCase: "Gan./Caja",
+        addCases: "Agregar",
+        adjustCases: "Ajustar",
+        case: "CAJA",
+        cases: "CAJAS",
+        orderInfo: "Info Pedido",
+        poNumber: "N° Orden",
+        vendor: "Proveedor",
+        vendorPlaceholder: "Nombre proveedor",
+        date: "Fecha",
+        cart: "Carrito",
+        emptyCart: "Carrito vacío",
+        orderNotes: "Notas...",
+        totalCases: "Total Cajas",
+        totalBottles: "Total Botellas",
+        ourCost: "Nuestro Costo",
+        revenue: "Ingresos",
+        profit: "GANANCIA",
+        roi: "ROI",
+        purchaseOrder: "ORDEN DE COMPRA",
+        close: "Cerrar",
+        pricingTier: "Margen",
+        internalCode: "Código Interno",
+        product: "Producto",
+        size: "Tamaño",
+        totalBtls: "Total Btls",
+        revenueCol: "Ingresos",
+        profitCol: "Ganancia",
+        totalProfit: "GANANCIA TOTAL",
+        printSavePdf: "Imprimir / PDF",
+        generatePO: "Generar Orden de Compra",
+        all: "Todos",
+        champagne: "Champagne",
+        espumante: "Espumante",
+        cognac: "Cognac",
+        whisky: "Whisky",
+        searchProducts: "Buscar...",
+        clearAll: "Borrar",
+      }
+    };
+
+    // ==================== CONSTANTS ====================
     const CONTAINER_MIN = 7000;
     const CONTAINER_MAX = 9000;
     const CONTAINER_ABSOLUTE_MAX = 10000;
 
     const productData = [
-      { codigo: "^27050000", internalCode: "CH ARM BRIG BRUT GOLD 750", category: "CHAMPAGNE", name: "ARMAND DE BRIGNAC BRUT GOLD GIFT BOX", abv: "12.5", sizeMl: "750", bottlesPerCase: 6, caseCost: 2100, costPerBottle: 350, worldRetail: 430, marginPct: 18.6, markup15: { resalePrice: 402.5, profitPerBottle: 52.5, revenuePerCase: 2415, profitPerCase: 315 }, markup20: { resalePrice: 420, profitPerBottle: 70, revenuePerCase: 2520, profitPerCase: 420 }, markup50: { resalePrice: 525, profitPerBottle: 175, revenuePerCase: 3150, profitPerCase: 1050 } },
-      { codigo: "^27050005", internalCode: "CH CHA DELICE 750", category: "ESPUMANTE", name: "CHANDON DELICE", abv: "11.5", sizeMl: "750", bottlesPerCase: 6, caseCost: 72, costPerBottle: 12, worldRetail: 18.5, marginPct: 35.1, markup15: { resalePrice: 13.8, profitPerBottle: 1.8, revenuePerCase: 82.8, profitPerCase: 10.8 }, markup20: { resalePrice: 14.4, profitPerBottle: 2.4, revenuePerCase: 86.4, profitPerCase: 14.4 }, markup50: { resalePrice: 18, profitPerBottle: 6, revenuePerCase: 108, profitPerCase: 36 } },
-      { codigo: "^27050006", internalCode: "CH CHA EXTRA BRUT", category: "ESPUMANTE", name: "CHANDON EXTRA BRUT", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 72, costPerBottle: 12, worldRetail: 17.5, marginPct: 31.4, markup15: { resalePrice: 13.8, profitPerBottle: 1.8, revenuePerCase: 82.8, profitPerCase: 10.8 }, markup20: { resalePrice: 14.4, profitPerBottle: 2.4, revenuePerCase: 86.4, profitPerCase: 14.4 }, markup50: { resalePrice: 18, profitPerBottle: 6, revenuePerCase: 108, profitPerCase: 36 } },
-      { codigo: "^27050029", internalCode: "CH CHA GARDEN 750", category: "ESPUMANTE", name: "CHANDON GARDEN SPRITZ", abv: "11.5", sizeMl: "750", bottlesPerCase: 6, caseCost: 72, costPerBottle: 12, worldRetail: 17.8, marginPct: 32.6, markup15: { resalePrice: 13.8, profitPerBottle: 1.8, revenuePerCase: 82.8, profitPerCase: 10.8 }, markup20: { resalePrice: 14.4, profitPerBottle: 2.4, revenuePerCase: 86.4, profitPerCase: 14.4 }, markup50: { resalePrice: 18, profitPerBottle: 6, revenuePerCase: 108, profitPerCase: 36 } },
-      { codigo: "^27050017", internalCode: "CH DON PER 750", category: "CHAMPAGNE", name: "DON PERIGNON SIN ESTUCHE", abv: "12.5", sizeMl: "750", bottlesPerCase: 6, caseCost: 1140, costPerBottle: 190, worldRetail: 299, marginPct: 36.5, markup15: { resalePrice: 218.5, profitPerBottle: 28.5, revenuePerCase: 1311, profitPerCase: 171 }, markup20: { resalePrice: 228, profitPerBottle: 38, revenuePerCase: 1368, profitPerCase: 228 }, markup50: { resalePrice: 285, profitPerBottle: 95, revenuePerCase: 1710, profitPerCase: 570 } },
-      { codigo: "^27050018", internalCode: "CH EXPRES BRUT 750ML", category: "CHAMPAGNE", name: "EXPRESION BRUT PREMIUM SPARKLING", abv: "11", sizeMl: "750", bottlesPerCase: 6, caseCost: 20, costPerBottle: 3.33, worldRetail: 3.33, marginPct: -0.1, markup15: { resalePrice: 3.83, profitPerBottle: 0.5, revenuePerCase: 23, profitPerCase: 3 }, markup20: { resalePrice: 4, profitPerBottle: 0.67, revenuePerCase: 24, profitPerCase: 4 }, markup50: { resalePrice: 5, profitPerBottle: 1.67, revenuePerCase: 30, profitPerCase: 10 } },
-      { codigo: "^27050021", internalCode: "CH MOE ICE ROS 750", category: "CHAMPAGNE", name: "MOET CHANDON ICE ROSE IMPERIAL", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 330, costPerBottle: 55, worldRetail: 78, marginPct: 29.5, markup15: { resalePrice: 63.25, profitPerBottle: 8.25, revenuePerCase: 379.5, profitPerCase: 49.5 }, markup20: { resalePrice: 66, profitPerBottle: 11, revenuePerCase: 396, profitPerCase: 66 }, markup50: { resalePrice: 82.5, profitPerBottle: 27.5, revenuePerCase: 495, profitPerCase: 165 } },
-      { codigo: "^27050022", internalCode: "CH MOE IMP 750", category: "CHAMPAGNE", name: "MOET CHANDON IMPERIAL BRUT", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 250, costPerBottle: 41.67, worldRetail: 59, marginPct: 29.4, markup15: { resalePrice: 47.92, profitPerBottle: 6.25, revenuePerCase: 287.5, profitPerCase: 37.5 }, markup20: { resalePrice: 50, profitPerBottle: 8.33, revenuePerCase: 300, profitPerCase: 50 }, markup50: { resalePrice: 62.5, profitPerBottle: 20.83, revenuePerCase: 375, profitPerCase: 125 } },
-      { codigo: "^27050032", internalCode: "CH MOE IMP BRUT 750", category: "CHAMPAGNE", name: "MOET CHANDON IMPERIAL BRUT GIFT BOX", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 260, costPerBottle: 43.33, worldRetail: 63, marginPct: 31.2, markup15: { resalePrice: 49.83, profitPerBottle: 6.5, revenuePerCase: 299, profitPerCase: 39 }, markup20: { resalePrice: 52, profitPerBottle: 8.67, revenuePerCase: 312, profitPerCase: 52 }, markup50: { resalePrice: 65, profitPerBottle: 21.67, revenuePerCase: 390, profitPerCase: 130 } },
-      { codigo: "^27050023", internalCode: "CH MOE IMP ICE 750", category: "CHAMPAGNE", name: "MOET CHANDON IMPERIAL ICE", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 280, costPerBottle: 46.67, worldRetail: 70, marginPct: 33.3, markup15: { resalePrice: 53.67, profitPerBottle: 7, revenuePerCase: 322, profitPerCase: 42 }, markup20: { resalePrice: 56, profitPerBottle: 9.33, revenuePerCase: 336, profitPerCase: 56 }, markup50: { resalePrice: 70, profitPerBottle: 23.33, revenuePerCase: 420, profitPerCase: 140 } },
-      { codigo: "^27050024", internalCode: "CH MOE IMP NEC 750", category: "CHAMPAGNE", name: "MOET CHANDON NECTAR IMPERIAL", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 240, costPerBottle: 40, worldRetail: 65, marginPct: 38.5, markup15: { resalePrice: 46, profitPerBottle: 6, revenuePerCase: 276, profitPerCase: 36 }, markup20: { resalePrice: 48, profitPerBottle: 8, revenuePerCase: 288, profitPerCase: 48 }, markup50: { resalePrice: 60, profitPerBottle: 20, revenuePerCase: 360, profitPerCase: 120 } },
-      { codigo: "^27050033", internalCode: "CH MOE ROSE 750", category: "CHAMPAGNE", name: "MOET CHANDON ROSE", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 280, costPerBottle: 46.67, worldRetail: 74.5, marginPct: 37.4, markup15: { resalePrice: 53.67, profitPerBottle: 7, revenuePerCase: 322, profitPerCase: 42 }, markup20: { resalePrice: 56, profitPerBottle: 9.33, revenuePerCase: 336, profitPerCase: 56 }, markup50: { resalePrice: 70, profitPerBottle: 23.33, revenuePerCase: 420, profitPerCase: 140 } },
-      { codigo: "^27050026", internalCode: "CH VEU RICH 750", category: "CHAMPAGNE", name: "VEUVE CLICQUOT RICH", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 300, costPerBottle: 50, worldRetail: 75, marginPct: 33.3, markup15: { resalePrice: 57.5, profitPerBottle: 7.5, revenuePerCase: 345, profitPerCase: 45 }, markup20: { resalePrice: 60, profitPerBottle: 10, revenuePerCase: 360, profitPerCase: 60 }, markup50: { resalePrice: 75, profitPerBottle: 25, revenuePerCase: 450, profitPerCase: 150 } },
-      { codigo: "^27050044", internalCode: "CH VEU RICH R 750", category: "CHAMPAGNE", name: "VEUVE CLICQUOT RICH ROSE", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 390, costPerBottle: 65, worldRetail: 83, marginPct: 21.7, markup15: { resalePrice: 74.75, profitPerBottle: 9.75, revenuePerCase: 448.5, profitPerCase: 58.5 }, markup20: { resalePrice: 78, profitPerBottle: 13, revenuePerCase: 468, profitPerCase: 78 }, markup50: { resalePrice: 97.5, profitPerBottle: 32.5, revenuePerCase: 585, profitPerCase: 195 } },
-      { codigo: "^27050027", internalCode: "CH VEU ROS 750", category: "CHAMPAGNE", name: "VEUVE CLICQUOT ROSE", abv: "12.5", sizeMl: "750", bottlesPerCase: 6, caseCost: 330, costPerBottle: 55, worldRetail: 78, marginPct: 29.5, markup15: { resalePrice: 63.25, profitPerBottle: 8.25, revenuePerCase: 379.5, profitPerCase: 49.5 }, markup20: { resalePrice: 66, profitPerBottle: 11, revenuePerCase: 396, profitPerCase: 66 }, markup50: { resalePrice: 82.5, profitPerBottle: 27.5, revenuePerCase: 495, profitPerCase: 165 } },
-      { codigo: "^27060008", internalCode: "COG HEN VERY 700", category: "COGNAC", name: "HENNESSY VERY SPECIAL GIFTBOX", abv: "40", sizeMl: "700", bottlesPerCase: 12, caseCost: 310, costPerBottle: 25.83, worldRetail: 42, marginPct: 38.5, markup15: { resalePrice: 29.71, profitPerBottle: 3.87, revenuePerCase: 356.5, profitPerCase: 46.5 }, markup20: { resalePrice: 31, profitPerBottle: 5.17, revenuePerCase: 372, profitPerCase: 62 }, markup50: { resalePrice: 38.75, profitPerBottle: 12.92, revenuePerCase: 465, profitPerCase: 155 } },
-      { codigo: "^27060011", internalCode: "COG HEN VSOP 1000", category: "COGNAC", name: "HENNESSY PRIVILEGE VSOP GIFTBOX 1L", abv: "40", sizeMl: "1000", bottlesPerCase: 12, caseCost: 720, costPerBottle: 60, worldRetail: 80, marginPct: 25, markup15: { resalePrice: 69, profitPerBottle: 9, revenuePerCase: 828, profitPerCase: 108 }, markup20: { resalePrice: 72, profitPerBottle: 12, revenuePerCase: 864, profitPerCase: 144 }, markup50: { resalePrice: 90, profitPerBottle: 30, revenuePerCase: 1080, profitPerCase: 360 } },
-      { codigo: "^27060000", internalCode: "COG HEN VSOP 700", category: "COGNAC", name: "HENNESSY PRIVILEGE VSOP GIFTBOX", abv: "40", sizeMl: "700", bottlesPerCase: 12, caseCost: 540, costPerBottle: 45, worldRetail: 74, marginPct: 39.2, markup15: { resalePrice: 51.75, profitPerBottle: 6.75, revenuePerCase: 621, profitPerCase: 81 }, markup20: { resalePrice: 54, profitPerBottle: 9, revenuePerCase: 648, profitPerCase: 108 }, markup50: { resalePrice: 67.5, profitPerBottle: 22.5, revenuePerCase: 810, profitPerCase: 270 } },
-      { codigo: "^27060016", internalCode: "COG HEN XO 1000", category: "COGNAC", name: "HENNESSY XO GIFT BOX", abv: "40", sizeMl: "1000", bottlesPerCase: 6, caseCost: 1200, costPerBottle: 200, worldRetail: 290, marginPct: 31, markup15: { resalePrice: 230, profitPerBottle: 30, revenuePerCase: 1380, profitPerCase: 180 }, markup20: { resalePrice: 240, profitPerBottle: 40, revenuePerCase: 1440, profitPerCase: 240 }, markup50: { resalePrice: 300, profitPerBottle: 100, revenuePerCase: 1800, profitPerCase: 600 } },
-      { codigo: "^27060010", internalCode: "COG HEN XO 700", category: "COGNAC", name: "HENNESSY XO GIFTBOX", abv: "40", sizeMl: "700", bottlesPerCase: 12, caseCost: 1680, costPerBottle: 140, worldRetail: 249, marginPct: 43.8, markup15: { resalePrice: 161, profitPerBottle: 21, revenuePerCase: 1932, profitPerCase: 252 }, markup20: { resalePrice: 168, profitPerBottle: 28, revenuePerCase: 2016, profitPerCase: 336 }, markup50: { resalePrice: 210, profitPerBottle: 70, revenuePerCase: 2520, profitPerCase: 840 } },
-      { codigo: "^27180018", internalCode: "WK CHI 18Y 1000", category: "WHISKY", name: "CHIVAS REGAL 18 AÑOS", abv: "40", sizeMl: "1000", bottlesPerCase: 6, caseCost: 300, costPerBottle: 50, worldRetail: 125, marginPct: 60, markup15: { resalePrice: 57.5, profitPerBottle: 7.5, revenuePerCase: 345, profitPerCase: 45 }, markup20: { resalePrice: 60, profitPerBottle: 10, revenuePerCase: 360, profitPerCase: 60 }, markup50: { resalePrice: 75, profitPerBottle: 25, revenuePerCase: 450, profitPerCase: 150 } },
-      { codigo: "^27180110", internalCode: "WK CHI 18Y 750", category: "WHISKY", name: "CHIVAS REGAL 18 AÑOS", abv: "40", sizeMl: "750", bottlesPerCase: 6, caseCost: 270, costPerBottle: 45, worldRetail: 87, marginPct: 48.3, markup15: { resalePrice: 51.75, profitPerBottle: 6.75, revenuePerCase: 310.5, profitPerCase: 40.5 }, markup20: { resalePrice: 54, profitPerBottle: 9, revenuePerCase: 324, profitPerCase: 54 }, markup50: { resalePrice: 67.5, profitPerBottle: 22.5, revenuePerCase: 405, profitPerCase: 135 } },
-      { codigo: "^27180178", internalCode: "WK CHI 18Y COLLE 1000", category: "WHISKY", name: "CHIVAS REGAL 18 AÑOS ULTIMATE CASK JAPANESE", abv: "48", sizeMl: "1000", bottlesPerCase: 6, caseCost: 510, costPerBottle: 85, worldRetail: 140, marginPct: 39.3, markup15: { resalePrice: 97.75, profitPerBottle: 12.75, revenuePerCase: 586.5, profitPerCase: 76.5 }, markup20: { resalePrice: 102, profitPerBottle: 17, revenuePerCase: 612, profitPerCase: 102 }, markup50: { resalePrice: 127.5, profitPerBottle: 42.5, revenuePerCase: 765, profitPerCase: 255 } },
-      { codigo: "^27180019", internalCode: "WK CHI 25Y 700", category: "WHISKY", name: "CHIVAS REGAL 25 AÑOS", abv: "40", sizeMl: "700", bottlesPerCase: 3, caseCost: 645, costPerBottle: 215, worldRetail: 410, marginPct: 47.6, markup15: { resalePrice: 247.25, profitPerBottle: 32.25, revenuePerCase: 741.75, profitPerCase: 96.75 }, markup20: { resalePrice: 258, profitPerBottle: 43, revenuePerCase: 774, profitPerCase: 129 }, markup50: { resalePrice: 322.5, profitPerBottle: 107.5, revenuePerCase: 967.5, profitPerCase: 322.5 } },
-      { codigo: "^27180179", internalCode: "WK CHI ULTIS BLE 1000", category: "WHISKY", name: "CHIVAS REGAL ULTIS BLENDED SCOTCH", abv: "40", sizeMl: "1000", bottlesPerCase: 3, caseCost: 1074, costPerBottle: 358, worldRetail: 192, marginPct: -86.5, markup15: { resalePrice: 411.7, profitPerBottle: 53.7, revenuePerCase: 1235.1, profitPerCase: 161.1 }, markup20: { resalePrice: 429.6, profitPerBottle: 71.6, revenuePerCase: 1288.8, profitPerCase: 214.8 }, markup50: { resalePrice: 537, profitPerBottle: 179, revenuePerCase: 1611, profitPerCase: 537 } },
-      { codigo: "^27180022", internalCode: "WK CHI WINE CASK 18Y 1000", category: "WHISKY", name: "CHIVAS REGAL 18 AÑOS WINE CASK", abv: "48", sizeMl: "1000", bottlesPerCase: 6, caseCost: 594, costPerBottle: 99, worldRetail: 125, marginPct: 20.8, markup15: { resalePrice: 113.85, profitPerBottle: 14.85, revenuePerCase: 683.1, profitPerCase: 89.1 }, markup20: { resalePrice: 118.8, profitPerBottle: 19.8, revenuePerCase: 712.8, profitPerCase: 118.8 }, markup50: { resalePrice: 148.5, profitPerBottle: 49.5, revenuePerCase: 891, profitPerCase: 297 } },
-      { codigo: "^27180043", internalCode: "WK GRA TRIP WOOD 1000", category: "WHISKY", name: "GRANTS TRIPLE WOOD FAMILY RESERVA", abv: "40", sizeMl: "1000", bottlesPerCase: 12, caseCost: 80, costPerBottle: 6.67, worldRetail: 19, marginPct: 64.9, markup15: { resalePrice: 7.67, profitPerBottle: 1, revenuePerCase: 92, profitPerCase: 12 }, markup20: { resalePrice: 8, profitPerBottle: 1.33, revenuePerCase: 96, profitPerCase: 16 }, markup50: { resalePrice: 10, profitPerBottle: 3.33, revenuePerCase: 120, profitPerCase: 40 } },
-      { codigo: "^27180067", internalCode: "WK JOHW RED 1000", category: "WHISKY", name: "JOHNNIE WALKER RED", abv: "40", sizeMl: "1000", bottlesPerCase: 12, caseCost: 115, costPerBottle: 9.58, worldRetail: 31.25, marginPct: 69.3, markup15: { resalePrice: 11.02, profitPerBottle: 1.44, revenuePerCase: 132.25, profitPerCase: 17.25 }, markup20: { resalePrice: 11.5, profitPerBottle: 1.92, revenuePerCase: 138, profitPerCase: 23 }, markup50: { resalePrice: 14.38, profitPerBottle: 4.79, revenuePerCase: 172.5, profitPerCase: 57.5 } },
-      { codigo: "^27180068", internalCode: "WK JOHW RED 375", category: "WHISKY", name: "JOHNNIE WALKER RED", abv: "40", sizeMl: "375", bottlesPerCase: 24, caseCost: 132, costPerBottle: 5.5, worldRetail: 13, marginPct: 57.7, markup15: { resalePrice: 6.32, profitPerBottle: 0.82, revenuePerCase: 151.8, profitPerCase: 19.8 }, markup20: { resalePrice: 6.6, profitPerBottle: 1.1, revenuePerCase: 158.4, profitPerCase: 26.4 }, markup50: { resalePrice: 8.25, profitPerBottle: 2.75, revenuePerCase: 198, profitPerCase: 66 } },
-      { codigo: "^27180070", internalCode: "WK JOHW RED 750", category: "WHISKY", name: "JOHNNIE WALKER RED", abv: "40", sizeMl: "750", bottlesPerCase: 12, caseCost: 94, costPerBottle: 7.83, worldRetail: 24.25, marginPct: 67.7, markup15: { resalePrice: 9.01, profitPerBottle: 1.17, revenuePerCase: 108.1, profitPerCase: 14.1 }, markup20: { resalePrice: 9.4, profitPerBottle: 1.57, revenuePerCase: 112.8, profitPerCase: 18.8 }, markup50: { resalePrice: 11.75, profitPerBottle: 3.92, revenuePerCase: 141, profitPerCase: 47 } },
-      { codigo: "^27180057", internalCode: "WK JOHW 12Y 1000", category: "WHISKY", name: "JOHNNIE WALKER BLACK 12 AÑOS", abv: "40", sizeMl: "1000", bottlesPerCase: 12, caseCost: 250, costPerBottle: 20.83, worldRetail: 39.5, marginPct: 47.3, markup15: { resalePrice: 23.96, profitPerBottle: 3.12, revenuePerCase: 287.5, profitPerCase: 37.5 }, markup20: { resalePrice: 25, profitPerBottle: 4.17, revenuePerCase: 300, profitPerCase: 50 }, markup50: { resalePrice: 31.25, profitPerBottle: 10.42, revenuePerCase: 375, profitPerCase: 125 } },
-      { codigo: "^27180145", internalCode: "WK JOHW 12Y 1750", category: "WHISKY", name: "JOHNNIE WALKER BLACK 12 AÑOS", abv: "40", sizeMl: "1750", bottlesPerCase: 6, caseCost: 270, costPerBottle: 22.5, worldRetail: 86.25, marginPct: 73.9, markup15: { resalePrice: 25.87, profitPerBottle: 3.37, revenuePerCase: 310.5, profitPerCase: 40.5 }, markup20: { resalePrice: 27, profitPerBottle: 4.5, revenuePerCase: 324, profitPerCase: 54 }, markup50: { resalePrice: 33.75, profitPerBottle: 11.25, revenuePerCase: 405, profitPerCase: 135 } },
-      { codigo: "^27180058", internalCode: "WK JOHW 12Y 375", category: "WHISKY", name: "JOHNNIE WALKER BLACK 12 AÑOS", abv: "40", sizeMl: "375", bottlesPerCase: 24, caseCost: 240, costPerBottle: 10, worldRetail: 21.5, marginPct: 53.5, markup15: { resalePrice: 11.5, profitPerBottle: 1.5, revenuePerCase: 276, profitPerCase: 36 }, markup20: { resalePrice: 12, profitPerBottle: 2, revenuePerCase: 288, profitPerCase: 48 }, markup50: { resalePrice: 15, profitPerBottle: 5, revenuePerCase: 360, profitPerCase: 120 } },
-      { codigo: "^27180059", internalCode: "WK JOHW 12Y 750", category: "WHISKY", name: "JOHNNIE WALKER BLACK 12 AÑOS", abv: "40", sizeMl: "750", bottlesPerCase: 12, caseCost: 210, costPerBottle: 17.5, worldRetail: 38.5, marginPct: 54.5, markup15: { resalePrice: 20.12, profitPerBottle: 2.62, revenuePerCase: 241.5, profitPerCase: 31.5 }, markup20: { resalePrice: 21, profitPerBottle: 3.5, revenuePerCase: 252, profitPerCase: 42 }, markup50: { resalePrice: 26.25, profitPerBottle: 8.75, revenuePerCase: 315, profitPerCase: 105 } },
-      { codigo: "^27180061", internalCode: "WK JOHW BLUE 1000", category: "WHISKY", name: "JOHNNIE WALKER BLUE LABEL BOX", abv: "43", sizeMl: "1000", bottlesPerCase: 6, caseCost: 1140, costPerBottle: 190, worldRetail: 330, marginPct: 42.4, markup15: { resalePrice: 218.5, profitPerBottle: 28.5, revenuePerCase: 1311, profitPerCase: 171 }, markup20: { resalePrice: 228, profitPerBottle: 38, revenuePerCase: 1368, profitPerCase: 228 }, markup50: { resalePrice: 285, profitPerBottle: 95, revenuePerCase: 1710, profitPerCase: 570 } },
-      { codigo: "^27180062", internalCode: "WK JOHW BLUE 750", category: "WHISKY", name: "JOHNNIE WALKER BLUE LABEL BOX", abv: "40", sizeMl: "750", bottlesPerCase: 6, caseCost: 820, costPerBottle: 136.67, worldRetail: 312, marginPct: 56.2, markup15: { resalePrice: 157.17, profitPerBottle: 20.5, revenuePerCase: 943, profitPerCase: 123 }, markup20: { resalePrice: 164, profitPerBottle: 27.33, revenuePerCase: 984, profitPerCase: 164 }, markup50: { resalePrice: 205, profitPerBottle: 68.33, revenuePerCase: 1230, profitPerCase: 410 } },
+      { codigo: "^27050000", internalCode: "CH ARM BRIG BRUT GOLD 750", category: "CHAMPAGNE", name: "ARMAND DE BRIGNAC BRUT GOLD GIFT BOX", abv: "12.5", sizeMl: "750", bottlesPerCase: 6, caseCost: 2100, costPerBottle: 350 },
+      { codigo: "^27050005", internalCode: "CH CHA DELICE 750", category: "ESPUMANTE", name: "CHANDON DELICE", abv: "11.5", sizeMl: "750", bottlesPerCase: 6, caseCost: 72, costPerBottle: 12 },
+      { codigo: "^27050006", internalCode: "CH CHA EXTRA BRUT", category: "ESPUMANTE", name: "CHANDON EXTRA BRUT", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 72, costPerBottle: 12 },
+      { codigo: "^27050029", internalCode: "CH CHA GARDEN 750", category: "ESPUMANTE", name: "CHANDON GARDEN SPRITZ", abv: "11.5", sizeMl: "750", bottlesPerCase: 6, caseCost: 72, costPerBottle: 12 },
+      { codigo: "^27050017", internalCode: "CH DON PER 750", category: "CHAMPAGNE", name: "DON PERIGNON SIN ESTUCHE", abv: "12.5", sizeMl: "750", bottlesPerCase: 6, caseCost: 1140, costPerBottle: 190 },
+      { codigo: "^27050018", internalCode: "CH EXPRES BRUT 750ML", category: "CHAMPAGNE", name: "EXPRESION BRUT PREMIUM SPARKLING", abv: "11", sizeMl: "750", bottlesPerCase: 6, caseCost: 20, costPerBottle: 3.33 },
+      { codigo: "^27050021", internalCode: "CH MOE ICE ROS 750", category: "CHAMPAGNE", name: "MOET CHANDON ICE ROSE IMPERIAL", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 330, costPerBottle: 55 },
+      { codigo: "^27050022", internalCode: "CH MOE IMP 750", category: "CHAMPAGNE", name: "MOET CHANDON IMPERIAL BRUT", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 250, costPerBottle: 41.67 },
+      { codigo: "^27050032", internalCode: "CH MOE IMP BRUT 750", category: "CHAMPAGNE", name: "MOET CHANDON IMPERIAL BRUT GIFT BOX", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 260, costPerBottle: 43.33 },
+      { codigo: "^27050023", internalCode: "CH MOE IMP ICE 750", category: "CHAMPAGNE", name: "MOET CHANDON IMPERIAL ICE", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 280, costPerBottle: 46.67 },
+      { codigo: "^27050024", internalCode: "CH MOE IMP NEC 750", category: "CHAMPAGNE", name: "MOET CHANDON NECTAR IMPERIAL", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 240, costPerBottle: 40 },
+      { codigo: "^27050033", internalCode: "CH MOE ROSE 750", category: "CHAMPAGNE", name: "MOET CHANDON ROSE", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 280, costPerBottle: 46.67 },
+      { codigo: "^27050026", internalCode: "CH VEU RICH 750", category: "CHAMPAGNE", name: "VEUVE CLICQUOT RICH", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 300, costPerBottle: 50 },
+      { codigo: "^27050044", internalCode: "CH VEU RICH R 750", category: "CHAMPAGNE", name: "VEUVE CLICQUOT RICH ROSE", abv: "12", sizeMl: "750", bottlesPerCase: 6, caseCost: 390, costPerBottle: 65 },
+      { codigo: "^27050027", internalCode: "CH VEU ROS 750", category: "CHAMPAGNE", name: "VEUVE CLICQUOT ROSE", abv: "12.5", sizeMl: "750", bottlesPerCase: 6, caseCost: 330, costPerBottle: 55 },
+      { codigo: "^27060008", internalCode: "COG HEN VERY 700", category: "COGNAC", name: "HENNESSY VERY SPECIAL GIFTBOX", abv: "40", sizeMl: "700", bottlesPerCase: 12, caseCost: 310, costPerBottle: 25.83 },
+      { codigo: "^27060011", internalCode: "COG HEN VSOP 1000", category: "COGNAC", name: "HENNESSY PRIVILEGE VSOP GIFTBOX 1L", abv: "40", sizeMl: "1000", bottlesPerCase: 12, caseCost: 720, costPerBottle: 60 },
+      { codigo: "^27060000", internalCode: "COG HEN VSOP 700", category: "COGNAC", name: "HENNESSY PRIVILEGE VSOP GIFTBOX", abv: "40", sizeMl: "700", bottlesPerCase: 12, caseCost: 540, costPerBottle: 45 },
+      { codigo: "^27060016", internalCode: "COG HEN XO 1000", category: "COGNAC", name: "HENNESSY XO GIFT BOX", abv: "40", sizeMl: "1000", bottlesPerCase: 6, caseCost: 1200, costPerBottle: 200 },
+      { codigo: "^27060010", internalCode: "COG HEN XO 700", category: "COGNAC", name: "HENNESSY XO GIFTBOX", abv: "40", sizeMl: "700", bottlesPerCase: 12, caseCost: 1680, costPerBottle: 140 },
+      { codigo: "^27180018", internalCode: "WK CHI 18Y 1000", category: "WHISKY", name: "CHIVAS REGAL 18 AÑOS", abv: "40", sizeMl: "1000", bottlesPerCase: 6, caseCost: 300, costPerBottle: 50 },
+      { codigo: "^27180110", internalCode: "WK CHI 18Y 750", category: "WHISKY", name: "CHIVAS REGAL 18 AÑOS", abv: "40", sizeMl: "750", bottlesPerCase: 6, caseCost: 270, costPerBottle: 45 },
+      { codigo: "^27180178", internalCode: "WK CHI 18Y COLLE 1000", category: "WHISKY", name: "CHIVAS REGAL 18 AÑOS ULTIMATE CASK JAPANESE", abv: "48", sizeMl: "1000", bottlesPerCase: 6, caseCost: 510, costPerBottle: 85 },
+      { codigo: "^27180019", internalCode: "WK CHI 25Y 700", category: "WHISKY", name: "CHIVAS REGAL 25 AÑOS", abv: "40", sizeMl: "700", bottlesPerCase: 3, caseCost: 645, costPerBottle: 215 },
+      { codigo: "^27180179", internalCode: "WK CHI ULTIS BLE 1000", category: "WHISKY", name: "CHIVAS REGAL ULTIS BLENDED SCOTCH", abv: "40", sizeMl: "1000", bottlesPerCase: 3, caseCost: 1074, costPerBottle: 358 },
+      { codigo: "^27180022", internalCode: "WK CHI WINE CASK 18Y 1000", category: "WHISKY", name: "CHIVAS REGAL 18 AÑOS WINE CASK", abv: "48", sizeMl: "1000", bottlesPerCase: 6, caseCost: 594, costPerBottle: 99 },
+      { codigo: "^27180043", internalCode: "WK GRA TRIP WOOD 1000", category: "WHISKY", name: "GRANTS TRIPLE WOOD FAMILY RESERVA", abv: "40", sizeMl: "1000", bottlesPerCase: 12, caseCost: 80, costPerBottle: 6.67 },
+      { codigo: "^27180067", internalCode: "WK JOHW RED 1000", category: "WHISKY", name: "JOHNNIE WALKER RED", abv: "40", sizeMl: "1000", bottlesPerCase: 12, caseCost: 115, costPerBottle: 9.58 },
+      { codigo: "^27180068", internalCode: "WK JOHW RED 375", category: "WHISKY", name: "JOHNNIE WALKER RED", abv: "40", sizeMl: "375", bottlesPerCase: 24, caseCost: 132, costPerBottle: 5.5 },
+      { codigo: "^27180070", internalCode: "WK JOHW RED 750", category: "WHISKY", name: "JOHNNIE WALKER RED", abv: "40", sizeMl: "750", bottlesPerCase: 12, caseCost: 94, costPerBottle: 7.83 },
+      { codigo: "^27180057", internalCode: "WK JOHW 12Y 1000", category: "WHISKY", name: "JOHNNIE WALKER BLACK 12 AÑOS", abv: "40", sizeMl: "1000", bottlesPerCase: 12, caseCost: 250, costPerBottle: 20.83 },
+      { codigo: "^27180145", internalCode: "WK JOHW 12Y 1750", category: "WHISKY", name: "JOHNNIE WALKER BLACK 12 AÑOS", abv: "40", sizeMl: "1750", bottlesPerCase: 6, caseCost: 270, costPerBottle: 22.5 },
+      { codigo: "^27180058", internalCode: "WK JOHW 12Y 375", category: "WHISKY", name: "JOHNNIE WALKER BLACK 12 AÑOS", abv: "40", sizeMl: "375", bottlesPerCase: 24, caseCost: 240, costPerBottle: 10 },
+      { codigo: "^27180059", internalCode: "WK JOHW 12Y 750", category: "WHISKY", name: "JOHNNIE WALKER BLACK 12 AÑOS", abv: "40", sizeMl: "750", bottlesPerCase: 12, caseCost: 210, costPerBottle: 17.5 },
+      { codigo: "^27180061", internalCode: "WK JOHW BLUE 1000", category: "WHISKY", name: "JOHNNIE WALKER BLUE LABEL BOX", abv: "43", sizeMl: "1000", bottlesPerCase: 6, caseCost: 1140, costPerBottle: 190 },
+      { codigo: "^27180062", internalCode: "WK JOHW BLUE 750", category: "WHISKY", name: "JOHNNIE WALKER BLUE LABEL BOX", abv: "40", sizeMl: "750", bottlesPerCase: 6, caseCost: 820, costPerBottle: 136.67 },
     ];
 
-    const categories = ["All", "CHAMPAGNE", "ESPUMANTE", "COGNAC", "WHISKY"];
-    const markupOptions = [
-      { key: 'markup15', label: '15%', color: 'blue' },
-      { key: 'markup20', label: '20%', color: 'green' },
-      { key: 'markup50', label: '50%', color: 'amber' },
-    ];
+    const presetMarkups = [15, 20, 50];
 
     const categoryColors = {
       CHAMPAGNE: { bg: 'bg-amber-900/30', border: 'border-amber-500/40', text: 'text-amber-300' },
@@ -97,21 +268,37 @@
       X: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>,
       Check: () => <svg className="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>,
       Alert: () => <svg className="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/></svg>,
-      Percent: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>,
+      Percent: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>,
     };
 
     function App() {
+      const [language, setLanguage] = useState('en');
       const [search, setSearch] = useState('');
       const [category, setCategory] = useState('All');
       const [cart, setCart] = useState([]);
       const [showPO, setShowPO] = useState(false);
-      const [selectedMarkup, setSelectedMarkup] = useState('markup20');
+      const [markupPercent, setMarkupPercent] = useState(20);
       const [poInfo, setPoInfo] = useState({
         poNumber: `PO-${Date.now().toString().slice(-6)}`,
         vendor: '',
         date: new Date().toISOString().split('T')[0],
         notes: ''
       });
+
+      const t = translations[language];
+
+      const getCategoryLabel = (cat) => {
+        const catMap = { 'All': t.all, 'CHAMPAGNE': t.champagne, 'ESPUMANTE': t.espumante, 'COGNAC': t.cognac, 'WHISKY': t.whisky };
+        return catMap[cat] || cat;
+      };
+
+      const calculatePricing = (product) => {
+        const resalePrice = product.costPerBottle * (1 + markupPercent / 100);
+        const profitPerBottle = resalePrice - product.costPerBottle;
+        const revenuePerCase = resalePrice * product.bottlesPerCase;
+        const profitPerCase = profitPerBottle * product.bottlesPerCase;
+        return { resalePrice, profitPerBottle, revenuePerCase, profitPerCase };
+      };
 
       const filteredProducts = useMemo(() => {
         return productData.filter(p => {
@@ -153,23 +340,52 @@
         const totalCases = cart.reduce((sum, item) => sum + item.qty, 0);
         const totalBottles = cart.reduce((sum, item) => sum + (item.qty * item.bottlesPerCase), 0);
         const totalCost = cart.reduce((sum, item) => sum + (item.qty * item.caseCost), 0);
-        const totalRevenue = cart.reduce((sum, item) => sum + (item.qty * item[selectedMarkup].revenuePerCase), 0);
-        const totalProfit = cart.reduce((sum, item) => sum + (item.qty * item[selectedMarkup].profitPerCase), 0);
+        const totalRevenue = cart.reduce((sum, item) => {
+          const pricing = calculatePricing(item);
+          return sum + (item.qty * pricing.revenuePerCase);
+        }, 0);
+        const totalProfit = cart.reduce((sum, item) => {
+          const pricing = calculatePricing(item);
+          return sum + (item.qty * pricing.profitPerCase);
+        }, 0);
         return { totalCases, totalBottles, totalCost, totalRevenue, totalProfit };
-      }, [cart, selectedMarkup]);
+      }, [cart, markupPercent]);
 
       const containerStatus = useMemo(() => {
         const bottles = totals.totalBottles;
-        const percent = Math.min((bottles / CONTAINER_MAX) * 100, 100);
-        if (bottles === 0) return { status: 'empty', color: 'slate', message: 'Container empty', percent: 0 };
-        if (bottles < CONTAINER_MIN) return { status: 'under', color: 'blue', message: `${(CONTAINER_MIN - bottles).toLocaleString()} bottles to minimum`, percent };
-        if (bottles <= CONTAINER_MAX) return { status: 'optimal', color: 'green', message: 'Optimal container load!', percent };
-        return { status: 'over', color: 'red', message: `Over by ${(bottles - CONTAINER_MAX).toLocaleString()} bottles!`, percent: 100 };
-      }, [totals.totalBottles]);
+        if (bottles === 0) return { status: 'empty', message: t.containerEmpty };
+        if (bottles < CONTAINER_MIN) return { status: 'under', message: `${(CONTAINER_MIN - bottles).toLocaleString()} ${t.bottlesToMinimum}` };
+        if (bottles <= CONTAINER_MAX) return { status: 'optimal', message: t.optimalLoad };
+        return { status: 'over', message: `${t.overBy} ${(bottles - CONTAINER_MAX).toLocaleString()} ${t.bottles}!` };
+      }, [totals.totalBottles, t]);
 
       const formatCurrency = (val) => `$${val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       const formatSize = (ml) => { if (!ml) return ''; const num = parseInt(ml); return num >= 1000 ? `${num/1000}L` : `${num}ml`; };
-      const markupLabel = markupOptions.find(m => m.key === selectedMarkup)?.label || '20%';
+
+      const handleMarkupChange = (value) => {
+        const num = parseFloat(value);
+        if (!isNaN(num) && num >= 0) setMarkupPercent(num);
+        else if (value === '') setMarkupPercent(0);
+      };
+
+      // Clean Language Selector
+      const LanguageSelector = () => (
+        <div className="flex items-center bg-slate-800/80 rounded-lg border border-slate-600 overflow-hidden">
+          {['en', 'fr', 'es'].map((lang, idx) => (
+            <button
+              key={lang}
+              onClick={() => setLanguage(lang)}
+              className={`px-4 py-2 text-sm font-semibold transition-all ${
+                language === lang 
+                  ? 'bg-amber-500 text-slate-900' 
+                  : 'text-slate-400 hover:text-white hover:bg-slate-700'
+              } ${idx > 0 ? 'border-l border-slate-600' : ''}`}
+            >
+              {lang.toUpperCase()}
+            </button>
+          ))}
+        </div>
+      );
 
       // Container Gauge
       const ContainerGauge = () => {
@@ -183,11 +399,11 @@
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <span className="text-blue-400"><Icons.Package /></span>
-                <span className="font-bold text-lg">20ft Container</span>
+                <span className="font-bold text-lg">{t.container20ft}</span>
               </div>
               <div className="text-right">
                 <span className={`text-2xl font-bold ${containerStatus.status === 'optimal' ? 'text-green-400' : containerStatus.status === 'over' ? 'text-red-400' : containerStatus.status === 'under' ? 'text-blue-400' : 'text-slate-400'}`}>{bottles.toLocaleString()}</span>
-                <span className="text-slate-400 text-sm"> / {CONTAINER_MIN.toLocaleString()}-{CONTAINER_MAX.toLocaleString()} bottles</span>
+                <span className="text-slate-400 text-sm"> / {CONTAINER_MIN.toLocaleString()}-{CONTAINER_MAX.toLocaleString()}</span>
               </div>
             </div>
             <div className="relative h-8 bg-slate-700 rounded-lg overflow-hidden">
@@ -213,68 +429,69 @@
           <div className="min-h-screen bg-gray-100 p-4 print:p-0 print:bg-white">
             <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-8 print:shadow-none">
               <div className="flex justify-between items-start mb-6 border-b pb-4">
-                <div><h1 className="text-3xl font-bold text-gray-800">PURCHASE ORDER</h1><p className="text-lg text-gray-600 font-mono">{poInfo.poNumber}</p></div>
-                <button onClick={() => setShowPO(false)} className="no-print px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 flex items-center gap-2"><Icons.X /> Close</button>
+                <div><h1 className="text-3xl font-bold text-gray-800">{t.purchaseOrder}</h1><p className="text-lg text-gray-600 font-mono">{poInfo.poNumber}</p></div>
+                <button onClick={() => setShowPO(false)} className="no-print px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 flex items-center gap-2"><Icons.X /> {t.close}</button>
               </div>
               <div className="grid grid-cols-4 gap-4 mb-6 text-sm">
-                <div><p className="text-gray-500">Date</p><p className="font-medium">{poInfo.date}</p></div>
-                <div><p className="text-gray-500">Vendor</p><p className="font-medium">{poInfo.vendor || '—'}</p></div>
-                <div><p className="text-gray-500">Pricing Tier</p><p className="font-medium text-green-600">{markupLabel} Markup</p></div>
-                <div><p className="text-gray-500">Container</p><p className="font-medium">{totals.totalBottles.toLocaleString()} bottles</p></div>
+                <div><p className="text-gray-500">{t.date}</p><p className="font-medium">{poInfo.date}</p></div>
+                <div><p className="text-gray-500">{t.vendor}</p><p className="font-medium">{poInfo.vendor || '—'}</p></div>
+                <div><p className="text-gray-500">{t.pricingTier}</p><p className="font-medium text-green-600">{markupPercent}%</p></div>
+                <div><p className="text-gray-500">{t.container20ft}</p><p className="font-medium">{totals.totalBottles.toLocaleString()} {t.bottles}</p></div>
               </div>
               <table className="w-full mb-6 text-sm">
-                <thead><tr className="border-b-2 border-gray-300 bg-gray-50"><th className="text-left py-2 px-2">Internal Code</th><th className="text-left py-2 px-2">Product</th><th className="text-center py-2 px-2">Size</th><th className="text-center py-2 px-2">Cases</th><th className="text-center py-2 px-2">Btl/Case</th><th className="text-center py-2 px-2">Total Btls</th><th className="text-right py-2 px-2">Our Cost</th><th className="text-right py-2 px-2">Resale/Btl</th><th className="text-right py-2 px-2">Revenue</th><th className="text-right py-2 px-2">Profit</th></tr></thead>
+                <thead><tr className="border-b-2 border-gray-300 bg-gray-50"><th className="text-left py-2 px-2">{t.internalCode}</th><th className="text-left py-2 px-2">{t.product}</th><th className="text-center py-2 px-2">{t.size}</th><th className="text-center py-2 px-2">{t.cases}</th><th className="text-center py-2 px-2">{t.btlPerCase}</th><th className="text-center py-2 px-2">{t.totalBtls}</th><th className="text-right py-2 px-2">{t.ourCost}</th><th className="text-right py-2 px-2">{t.resalePerBtl}</th><th className="text-right py-2 px-2">{t.revenueCol}</th><th className="text-right py-2 px-2">{t.profitCol}</th></tr></thead>
                 <tbody>
-                  {cart.map((item, idx) => (
-                    <tr key={item.codigo} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                      <td className="py-2 px-2 font-mono text-xs">{item.internalCode}</td>
-                      <td className="py-2 px-2"><div className="font-medium">{item.name}</div><div className="text-xs text-gray-500">{item.category} • {item.abv}%</div></td>
-                      <td className="py-2 px-2 text-center">{formatSize(item.sizeMl)}</td>
-                      <td className="py-2 px-2 text-center font-semibold">{item.qty}</td>
-                      <td className="py-2 px-2 text-center">{item.bottlesPerCase}</td>
-                      <td className="py-2 px-2 text-center font-semibold text-blue-600">{item.qty * item.bottlesPerCase}</td>
-                      <td className="py-2 px-2 text-right">{formatCurrency(item.qty * item.caseCost)}</td>
-                      <td className="py-2 px-2 text-right">{formatCurrency(item[selectedMarkup].resalePrice)}</td>
-                      <td className="py-2 px-2 text-right">{formatCurrency(item.qty * item[selectedMarkup].revenuePerCase)}</td>
-                      <td className="py-2 px-2 text-right font-semibold text-green-600">{formatCurrency(item.qty * item[selectedMarkup].profitPerCase)}</td>
-                    </tr>
-                  ))}
+                  {cart.map((item, idx) => {
+                    const pricing = calculatePricing(item);
+                    return (
+                      <tr key={item.codigo} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                        <td className="py-2 px-2 font-mono text-xs">{item.internalCode}</td>
+                        <td className="py-2 px-2"><div className="font-medium">{item.name}</div><div className="text-xs text-gray-500">{item.category} • {item.abv}%</div></td>
+                        <td className="py-2 px-2 text-center">{formatSize(item.sizeMl)}</td>
+                        <td className="py-2 px-2 text-center font-semibold">{item.qty}</td>
+                        <td className="py-2 px-2 text-center">{item.bottlesPerCase}</td>
+                        <td className="py-2 px-2 text-center font-semibold text-blue-600">{item.qty * item.bottlesPerCase}</td>
+                        <td className="py-2 px-2 text-right">{formatCurrency(item.qty * item.caseCost)}</td>
+                        <td className="py-2 px-2 text-right">{formatCurrency(pricing.resalePrice)}</td>
+                        <td className="py-2 px-2 text-right">{formatCurrency(item.qty * pricing.revenuePerCase)}</td>
+                        <td className="py-2 px-2 text-right font-semibold text-green-600">{formatCurrency(item.qty * pricing.profitPerCase)}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
               <div className="flex justify-end">
                 <div className="w-80 space-y-2 text-sm">
-                  <div className="flex justify-between py-1"><span className="text-gray-600">Total Cases:</span><span className="font-medium">{totals.totalCases}</span></div>
-                  <div className="flex justify-between py-1"><span className="text-gray-600">Total Bottles:</span><span className="font-medium">{totals.totalBottles.toLocaleString()}</span></div>
-                  <div className="flex justify-between py-2 border-t"><span className="text-gray-600">Our Cost:</span><span className="font-semibold">{formatCurrency(totals.totalCost)}</span></div>
-                  <div className="flex justify-between py-2 border-t"><span className="text-gray-600">Total Revenue ({markupLabel}):</span><span className="font-semibold">{formatCurrency(totals.totalRevenue)}</span></div>
-                  <div className="flex justify-between py-3 border-t-2 border-gray-800"><span className="text-lg font-bold">TOTAL PROFIT:</span><span className="text-lg font-bold text-green-600">{formatCurrency(totals.totalProfit)}</span></div>
-                  <div className="flex justify-between py-1 text-xs text-gray-500"><span>ROI:</span><span>{totals.totalCost > 0 ? ((totals.totalProfit / totals.totalCost) * 100).toFixed(1) : 0}%</span></div>
+                  <div className="flex justify-between py-1"><span className="text-gray-600">{t.totalCases}:</span><span className="font-medium">{totals.totalCases}</span></div>
+                  <div className="flex justify-between py-1"><span className="text-gray-600">{t.totalBottles}:</span><span className="font-medium">{totals.totalBottles.toLocaleString()}</span></div>
+                  <div className="flex justify-between py-2 border-t"><span className="text-gray-600">{t.ourCost}:</span><span className="font-semibold">{formatCurrency(totals.totalCost)}</span></div>
+                  <div className="flex justify-between py-2 border-t"><span className="text-gray-600">{t.revenue} ({markupPercent}%):</span><span className="font-semibold">{formatCurrency(totals.totalRevenue)}</span></div>
+                  <div className="flex justify-between py-3 border-t-2 border-gray-800"><span className="text-lg font-bold">{t.totalProfit}:</span><span className="text-lg font-bold text-green-600">{formatCurrency(totals.totalProfit)}</span></div>
+                  <div className="flex justify-between py-1 text-xs text-gray-500"><span>{t.roi}:</span><span>{totals.totalCost > 0 ? ((totals.totalProfit / totals.totalCost) * 100).toFixed(1) : 0}%</span></div>
                 </div>
               </div>
               {poInfo.notes && <div className="mt-6 p-4 bg-gray-50 rounded-lg border"><p className="text-sm text-gray-600">{poInfo.notes}</p></div>}
-              <div className="mt-6 pt-4 border-t no-print"><button onClick={() => window.print()} className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"><Icons.Printer /> Print / Save PDF</button></div>
+              <div className="mt-6 pt-4 border-t no-print"><button onClick={() => window.print()} className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"><Icons.Printer /> {t.printSavePdf}</button></div>
             </div>
           </div>
         );
       }
 
-      // Quantity Controls with CLEAR LABELS
+      // Quantity Controls - Fixed width
       const QuantityControls = ({ product, inCart }) => {
         const currentQty = inCart?.qty || 0;
-        const markup = product[selectedMarkup];
+        const pricing = calculatePricing(product);
 
         if (!inCart) {
           return (
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-xs text-amber-400 font-bold uppercase tracking-wide">Add Cases</span>
+            <div className="flex flex-col items-center gap-1 w-36">
+              <span className="text-xs text-amber-400 font-bold uppercase tracking-wide">{t.addCases}</span>
               <div className="flex gap-1">
-                <button onClick={() => addToCart(product, 1)} className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white font-bold rounded-lg transition flex flex-col items-center leading-tight">
+                <button onClick={() => addToCart(product, 1)} className="w-16 h-12 bg-green-600 hover:bg-green-500 text-white font-bold rounded-lg transition flex flex-col items-center justify-center leading-tight">
                   <span className="text-xl">+1</span>
-                  <span className="text-xs opacity-90">CASE</span>
                 </button>
-                <button onClick={() => addToCart(product, 10)} className="px-4 py-2 bg-green-700 hover:bg-green-600 text-white font-bold rounded-lg transition flex flex-col items-center leading-tight">
+                <button onClick={() => addToCart(product, 10)} className="w-16 h-12 bg-green-700 hover:bg-green-600 text-white font-bold rounded-lg transition flex flex-col items-center justify-center leading-tight">
                   <span className="text-xl">+10</span>
-                  <span className="text-xs opacity-90">CASES</span>
                 </button>
               </div>
             </div>
@@ -282,28 +499,18 @@
         }
 
         return (
-          <div className="flex flex-col gap-1">
-            <span className="text-xs text-amber-400 font-bold uppercase tracking-wide text-center">Adjust Cases</span>
+          <div className="flex flex-col gap-1 w-52">
+            <span className="text-xs text-amber-400 font-bold uppercase tracking-wide text-center">{t.adjustCases}</span>
             <div className="flex items-center gap-1">
-              <button onClick={() => updateQty(product.codigo, -10)} className="w-12 h-11 rounded-lg bg-red-700 hover:bg-red-600 text-white font-bold flex flex-col items-center justify-center transition leading-tight">
-                <span className="text-lg">-10</span>
-                <span className="text-xs opacity-80">CASES</span>
-              </button>
-              <button onClick={() => updateQty(product.codigo, -1)} className="w-10 h-11 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold flex flex-col items-center justify-center transition">
-                <span className="text-lg">-1</span>
-              </button>
-              <input type="number" value={currentQty} onChange={(e) => setQty(product.codigo, e.target.value)} className="w-16 h-11 text-center bg-slate-800 border-2 border-amber-500 rounded-lg font-bold text-xl focus:outline-none" min="0" />
-              <button onClick={() => updateQty(product.codigo, 1)} className="w-10 h-11 rounded-lg bg-green-600 hover:bg-green-500 text-white font-bold flex flex-col items-center justify-center transition">
-                <span className="text-lg">+1</span>
-              </button>
-              <button onClick={() => updateQty(product.codigo, 10)} className="w-12 h-11 rounded-lg bg-green-700 hover:bg-green-600 text-white font-bold flex flex-col items-center justify-center transition leading-tight">
-                <span className="text-lg">+10</span>
-                <span className="text-xs opacity-80">CASES</span>
-              </button>
+              <button onClick={() => updateQty(product.codigo, -10)} className="w-10 h-10 rounded-lg bg-red-700 hover:bg-red-600 text-white font-bold flex items-center justify-center transition">-10</button>
+              <button onClick={() => updateQty(product.codigo, -1)} className="w-8 h-10 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold transition">-1</button>
+              <input type="number" value={currentQty} onChange={(e) => setQty(product.codigo, e.target.value)} className="w-14 h-10 text-center bg-slate-800 border-2 border-amber-500 rounded-lg font-bold text-lg focus:outline-none" min="0" />
+              <button onClick={() => updateQty(product.codigo, 1)} className="w-8 h-10 rounded-lg bg-green-600 hover:bg-green-500 text-white font-bold transition">+1</button>
+              <button onClick={() => updateQty(product.codigo, 10)} className="w-10 h-10 rounded-lg bg-green-700 hover:bg-green-600 text-white font-bold transition">+10</button>
             </div>
-            <div className="text-center">
-              <span className="text-xs text-slate-400">= {(currentQty * product.bottlesPerCase).toLocaleString()} bottles</span>
-              <span className="text-xs text-green-400 ml-2">+{formatCurrency(currentQty * markup.profitPerCase)} profit</span>
+            <div className="text-center text-xs">
+              <span className="text-slate-400">= {(currentQty * product.bottlesPerCase).toLocaleString()} btls</span>
+              <span className="text-green-400 ml-2">+{formatCurrency(currentQty * pricing.profitPerCase)}</span>
             </div>
           </div>
         );
@@ -314,50 +521,73 @@
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
           <div className="max-w-7xl mx-auto p-4">
             {/* Header */}
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-3 flex-wrap gap-3">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-900"><Icons.Wine /></div>
-                <div><h1 className="text-2xl font-bold">Container Order Builder</h1><p className="text-slate-400 text-sm">{productData.length} Products • 20ft Container: {CONTAINER_MIN.toLocaleString()}-{CONTAINER_MAX.toLocaleString()} bottles</p></div>
+                <div>
+                  <h1 className="text-2xl font-bold">{t.appTitle}</h1>
+                  <p className="text-slate-400 text-sm">{productData.length} {t.products} • {CONTAINER_MIN.toLocaleString()}-{CONTAINER_MAX.toLocaleString()} {t.bottles}</p>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="text-center px-3 py-2 bg-slate-800 rounded-lg"><p className="text-xs text-slate-400">Cases</p><p className="text-xl font-bold text-amber-400">{totals.totalCases}</p></div>
-                <div className="text-center px-3 py-2 bg-slate-800 rounded-lg"><p className="text-xs text-slate-400">Cost</p><p className="text-xl font-bold">{formatCurrency(totals.totalCost)}</p></div>
-                <div className="text-center px-3 py-2 bg-green-900/50 rounded-lg border border-green-500/30"><p className="text-xs text-green-400">Profit</p><p className="text-xl font-bold text-green-400">{formatCurrency(totals.totalProfit)}</p></div>
+              <div className="flex items-center gap-3 flex-wrap">
+                <LanguageSelector />
+                <div className="flex items-center gap-2">
+                  <div className="text-center px-3 py-2 bg-slate-800 rounded-lg min-w-16"><p className="text-xs text-slate-400">{t.cases}</p><p className="text-xl font-bold text-amber-400">{totals.totalCases}</p></div>
+                  <div className="text-center px-3 py-2 bg-slate-800 rounded-lg min-w-24"><p className="text-xs text-slate-400">{t.cost}</p><p className="text-xl font-bold">{formatCurrency(totals.totalCost)}</p></div>
+                  <div className="text-center px-3 py-2 bg-green-900/50 rounded-lg border border-green-500/30 min-w-24"><p className="text-xs text-green-400">{t.profit}</p><p className="text-xl font-bold text-green-400">{formatCurrency(totals.totalProfit)}</p></div>
+                </div>
               </div>
             </div>
 
             <ContainerGauge />
 
             {/* Markup Selector */}
-            <div className="my-3 p-3 bg-slate-800/50 rounded-xl border border-slate-700 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-slate-400 flex items-center gap-2"><Icons.Percent /> Markup:</span>
-                <div className="flex gap-2">
-                  {markupOptions.map(opt => (
-                    <button key={opt.key} onClick={() => setSelectedMarkup(opt.key)} className={`px-5 py-2 rounded-lg font-bold transition ${selectedMarkup === opt.key ? opt.color === 'blue' ? 'bg-blue-500 text-white' : opt.color === 'green' ? 'bg-green-500 text-white' : 'bg-amber-500 text-slate-900' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}`}>{opt.label}</button>
-                  ))}
+            <div className="my-3 p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-400"><Icons.Percent /></span>
+                    <span className="text-sm text-slate-300 font-semibold">{t.markup}:</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input type="number" value={markupPercent} onChange={(e) => handleMarkupChange(e.target.value)} className="w-24 h-12 text-center bg-slate-900 border-2 border-green-500 rounded-xl font-bold text-2xl text-green-400 focus:outline-none focus:border-green-400" min="0" max="999" step="0.1" />
+                    <span className="text-2xl font-bold text-green-400">%</span>
+                  </div>
+                  <div className="flex gap-2 ml-2">
+                    <span className="text-xs text-slate-500 self-center mr-1">{t.quick}:</span>
+                    {presetMarkups.map(preset => (
+                      <button key={preset} onClick={() => setMarkupPercent(preset)} className={`w-14 py-2 rounded-lg font-bold transition text-sm ${markupPercent === preset ? 'bg-green-500 text-white ring-2 ring-green-400' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}`}>{preset}%</button>
+                    ))}
+                  </div>
                 </div>
+                {cart.length > 0 && <button onClick={() => setCart([])} className="text-sm text-red-400 hover:text-red-300 px-3 py-2 rounded border border-red-500/30 hover:bg-red-500/10">{t.clearAll} ({cart.length})</button>}
               </div>
-              {cart.length > 0 && <button onClick={() => setCart([])} className="text-sm text-red-400 hover:text-red-300 px-3 py-1 rounded border border-red-500/30 hover:bg-red-500/10">Clear All ({cart.length})</button>}
+              <div className="mt-3 pt-3 border-t border-slate-700/50 flex items-center gap-6 text-sm flex-wrap">
+                <span className="text-slate-400">{t.preview}:</span>
+                <span className="text-slate-300">$100 → <span className="text-green-400 font-bold">${(100 * (1 + markupPercent/100)).toFixed(2)}</span> {t.resale}</span>
+                <span className="text-slate-300">{t.profit}: <span className="text-green-400 font-bold">${(100 * markupPercent/100).toFixed(2)}</span> {t.profitPerBottle}</span>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               {/* Products */}
               <div className="lg:col-span-2 space-y-3">
                 <div className="flex flex-wrap gap-3">
-                  <div className="flex-1 min-w-64 relative">
+                  <div className="flex-1 min-w-48 relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"><Icons.Search /></span>
-                    <input type="text" placeholder="Search products..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl focus:outline-none focus:border-amber-400" />
+                    <input type="text" placeholder={t.searchProducts} value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl focus:outline-none focus:border-amber-400" />
                   </div>
-                  <div className="flex gap-1 bg-slate-800/80 rounded-xl p-1 border border-slate-700">
-                    {categories.map(cat => (<button key={cat} onClick={() => setCategory(cat)} className={`px-3 py-1.5 text-sm rounded-lg font-medium transition ${category === cat ? 'bg-amber-500 text-slate-900' : 'text-slate-400 hover:text-white'}`}>{cat === 'All' ? 'All' : cat.charAt(0) + cat.slice(1).toLowerCase()}</button>))}
+                  <div className="flex bg-slate-800/80 rounded-xl p-1 border border-slate-700">
+                    {['All', 'CHAMPAGNE', 'ESPUMANTE', 'COGNAC', 'WHISKY'].map(cat => (
+                      <button key={cat} onClick={() => setCategory(cat)} className={`px-3 py-1.5 text-sm rounded-lg font-medium transition whitespace-nowrap ${category === cat ? 'bg-amber-500 text-slate-900' : 'text-slate-400 hover:text-white'}`}>{getCategoryLabel(cat)}</button>
+                    ))}
                   </div>
                 </div>
-                <div className="space-y-2 max-h-[calc(100vh-380px)] overflow-y-auto pr-2 scrollbar-thin">
+                <div className="space-y-2 max-h-[calc(100vh-420px)] overflow-y-auto pr-2 scrollbar-thin">
                   {filteredProducts.map(product => {
                     const inCart = cart.find(item => item.codigo === product.codigo);
                     const colors = categoryColors[product.category] || categoryColors.WHISKY;
-                    const markup = product[selectedMarkup];
+                    const pricing = calculatePricing(product);
                     return (
                       <div key={product.codigo} className={`p-3 rounded-xl border transition ${inCart ? 'bg-amber-900/30 border-amber-500/60 ring-2 ring-amber-500/30' : `${colors.bg} ${colors.border}`}`}>
                         <div className="flex gap-3 items-center">
@@ -366,15 +596,16 @@
                               <span className={`text-xs px-2 py-0.5 rounded-full ${colors.bg} ${colors.text} border ${colors.border}`}>{product.category}</span>
                               <span className="text-xs text-slate-500">{formatSize(product.sizeMl)}</span>
                               <span className="text-xs text-slate-500">{product.abv}%</span>
-                              {inCart && <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500 text-slate-900 font-bold">{inCart.qty} cases • {(inCart.qty * product.bottlesPerCase).toLocaleString()} btls</span>}
+                              {inCart && <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500 text-slate-900 font-bold">{inCart.qty} × {product.bottlesPerCase} = {(inCart.qty * product.bottlesPerCase).toLocaleString()}</span>}
                             </div>
-                            <h3 className="font-semibold leading-tight">{product.name}</h3>
-                            <p className="text-xs text-slate-400">{product.internalCode}</p>
+                            <h3 className="font-semibold leading-tight truncate">{product.name}</h3>
+                            <p className="text-xs text-slate-400 truncate">{product.internalCode}</p>
                           </div>
-                          <div className="flex gap-2 text-center text-xs">
-                            <div className="px-2 py-1.5 bg-slate-900/50 rounded-lg"><p className="text-slate-500">Case Cost</p><p className="font-bold text-amber-400">${product.caseCost}</p></div>
-                            <div className="px-2 py-1.5 bg-slate-900/50 rounded-lg"><p className="text-slate-500">Btl/Case</p><p className="font-bold">{product.bottlesPerCase}</p></div>
-                            <div className="px-2 py-1.5 bg-green-900/30 rounded-lg border border-green-500/30"><p className="text-green-400">Profit/Case</p><p className="font-bold text-green-400">${markup.profitPerCase}</p></div>
+                          <div className="flex gap-1.5 text-center text-xs flex-shrink-0">
+                            <div className="w-16 px-1 py-1.5 bg-slate-900/50 rounded-lg"><p className="text-slate-500 truncate">{t.caseCost}</p><p className="font-bold text-amber-400">${product.caseCost}</p></div>
+                            <div className="w-14 px-1 py-1.5 bg-slate-900/50 rounded-lg"><p className="text-slate-500 truncate">{t.btlPerCase}</p><p className="font-bold">{product.bottlesPerCase}</p></div>
+                            <div className="w-16 px-1 py-1.5 bg-green-900/30 rounded-lg border border-green-500/30"><p className="text-green-400 truncate">{t.resalePerBtl}</p><p className="font-bold text-green-400">${pricing.resalePrice.toFixed(2)}</p></div>
+                            <div className="w-16 px-1 py-1.5 bg-green-900/30 rounded-lg border border-green-500/30"><p className="text-green-400 truncate">{t.profitPerCase}</p><p className="font-bold text-green-400">${pricing.profitPerCase.toFixed(2)}</p></div>
                           </div>
                           <QuantityControls product={product} inCart={inCart} />
                         </div>
@@ -387,46 +618,49 @@
               {/* Cart Sidebar */}
               <div className="space-y-3">
                 <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
-                  <h2 className="font-semibold mb-3 flex items-center gap-2"><span className="text-amber-400"><Icons.FileText /></span> Order Info</h2>
+                  <h2 className="font-semibold mb-3 flex items-center gap-2"><span className="text-amber-400"><Icons.FileText /></span> {t.orderInfo}</h2>
                   <div className="space-y-2">
-                    <div><label className="text-xs text-slate-400">PO Number</label><input type="text" value={poInfo.poNumber} onChange={(e) => setPoInfo({...poInfo, poNumber: e.target.value})} className="w-full mt-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm" /></div>
-                    <div><label className="text-xs text-slate-400">Vendor</label><input type="text" value={poInfo.vendor} onChange={(e) => setPoInfo({...poInfo, vendor: e.target.value})} placeholder="Vendor name" className="w-full mt-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm" /></div>
-                    <div><label className="text-xs text-slate-400">Date</label><input type="date" value={poInfo.date} onChange={(e) => setPoInfo({...poInfo, date: e.target.value})} className="w-full mt-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm" /></div>
+                    <div><label className="text-xs text-slate-400">{t.poNumber}</label><input type="text" value={poInfo.poNumber} onChange={(e) => setPoInfo({...poInfo, poNumber: e.target.value})} className="w-full mt-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm" /></div>
+                    <div><label className="text-xs text-slate-400">{t.vendor}</label><input type="text" value={poInfo.vendor} onChange={(e) => setPoInfo({...poInfo, vendor: e.target.value})} placeholder={t.vendorPlaceholder} className="w-full mt-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm" /></div>
+                    <div><label className="text-xs text-slate-400">{t.date}</label><input type="date" value={poInfo.date} onChange={(e) => setPoInfo({...poInfo, date: e.target.value})} className="w-full mt-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm" /></div>
                   </div>
                 </div>
                 <div className="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden">
-                  <div className="p-3 border-b border-slate-700"><h2 className="font-semibold flex items-center gap-2"><span className="text-amber-400"><Icons.ShoppingCart /></span> Cart ({cart.length})</h2></div>
+                  <div className="p-3 border-b border-slate-700"><h2 className="font-semibold flex items-center gap-2"><span className="text-amber-400"><Icons.ShoppingCart /></span> {t.cart} ({cart.length})</h2></div>
                   <div className="max-h-40 overflow-y-auto scrollbar-thin">
                     {cart.length === 0 ? (
-                      <div className="p-6 text-center text-slate-500"><span className="opacity-30"><Icons.Package /></span><p className="text-sm mt-2">Empty cart</p></div>
+                      <div className="p-6 text-center text-slate-500"><span className="opacity-30"><Icons.Package /></span><p className="text-sm mt-2">{t.emptyCart}</p></div>
                     ) : (
                       <div className="divide-y divide-slate-700/50">
-                        {cart.map(item => (
-                          <div key={item.codigo} className="p-2 flex items-center gap-2 hover:bg-slate-700/20">
-                            <div className="flex-1 min-w-0"><p className="font-medium text-sm truncate">{item.name}</p><p className="text-xs text-slate-400">{item.qty} cases × {item.bottlesPerCase} = {(item.qty*item.bottlesPerCase).toLocaleString()} btls</p></div>
-                            <div className="text-right text-xs"><p className="text-green-400 font-semibold">+{formatCurrency(item.qty * item[selectedMarkup].profitPerCase)}</p></div>
-                            <button onClick={() => removeFromCart(item.codigo)} className="p-1 text-slate-500 hover:text-red-400"><Icons.Trash /></button>
-                          </div>
-                        ))}
+                        {cart.map(item => {
+                          const pricing = calculatePricing(item);
+                          return (
+                            <div key={item.codigo} className="p-2 flex items-center gap-2 hover:bg-slate-700/20">
+                              <div className="flex-1 min-w-0"><p className="font-medium text-sm truncate">{item.name}</p><p className="text-xs text-slate-400">{item.qty} × {item.bottlesPerCase} = {(item.qty*item.bottlesPerCase).toLocaleString()}</p></div>
+                              <div className="text-right text-xs"><p className="text-green-400 font-semibold">+{formatCurrency(item.qty * pricing.profitPerCase)}</p></div>
+                              <button onClick={() => removeFromCart(item.codigo)} className="p-1 text-slate-500 hover:text-red-400"><Icons.Trash /></button>
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
                 </div>
                 <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 rounded-xl p-4 border border-green-500/30">
                   <div className="space-y-2 text-sm">
-                    <div className="flex justify-between"><span className="text-slate-300">Total Cases:</span><span className="font-bold text-lg">{totals.totalCases}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-300">Total Bottles:</span><span className={`font-bold text-lg ${containerStatus.status === 'optimal' ? 'text-green-400' : containerStatus.status === 'over' ? 'text-red-400' : ''}`}>{totals.totalBottles.toLocaleString()}</span></div>
-                    <div className="flex justify-between border-t border-green-500/30 pt-2"><span className="text-slate-300">Our Cost:</span><span className="font-semibold">{formatCurrency(totals.totalCost)}</span></div>
-                    <div className="flex justify-between"><span className="text-slate-300">Revenue ({markupLabel}):</span><span className="font-semibold">{formatCurrency(totals.totalRevenue)}</span></div>
+                    <div className="flex justify-between"><span className="text-slate-300">{t.totalCases}:</span><span className="font-bold text-lg">{totals.totalCases}</span></div>
+                    <div className="flex justify-between"><span className="text-slate-300">{t.totalBottles}:</span><span className={`font-bold text-lg ${containerStatus.status === 'optimal' ? 'text-green-400' : containerStatus.status === 'over' ? 'text-red-400' : ''}`}>{totals.totalBottles.toLocaleString()}</span></div>
+                    <div className="flex justify-between border-t border-green-500/30 pt-2"><span className="text-slate-300">{t.ourCost}:</span><span className="font-semibold">{formatCurrency(totals.totalCost)}</span></div>
+                    <div className="flex justify-between"><span className="text-slate-300">{t.revenue} ({markupPercent}%):</span><span className="font-semibold">{formatCurrency(totals.totalRevenue)}</span></div>
                     <div className="border-t border-green-500/30 pt-2 mt-2">
-                      <div className="flex justify-between items-baseline"><span className="font-semibold text-lg">PROFIT:</span><span className="text-3xl font-bold text-green-400">{formatCurrency(totals.totalProfit)}</span></div>
-                      <div className="flex justify-between text-xs mt-1"><span className="text-slate-400">ROI:</span><span className="text-green-400 font-bold">{totals.totalCost > 0 ? ((totals.totalProfit / totals.totalCost) * 100).toFixed(1) : 0}%</span></div>
+                      <div className="flex justify-between items-baseline"><span className="font-semibold text-lg">{t.profit}:</span><span className="text-3xl font-bold text-green-400">{formatCurrency(totals.totalProfit)}</span></div>
+                      <div className="flex justify-between text-xs mt-1"><span className="text-slate-400">{t.roi}:</span><span className="text-green-400 font-bold">{totals.totalCost > 0 ? ((totals.totalProfit / totals.totalCost) * 100).toFixed(1) : 0}%</span></div>
                     </div>
                   </div>
                 </div>
-                <textarea value={poInfo.notes} onChange={(e) => setPoInfo({...poInfo, notes: e.target.value})} placeholder="Order notes..." rows={2} className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm resize-none" />
+                <textarea value={poInfo.notes} onChange={(e) => setPoInfo({...poInfo, notes: e.target.value})} placeholder={t.orderNotes} rows={2} className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm resize-none" />
                 <button onClick={() => setShowPO(true)} disabled={cart.length === 0} className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition ${cart.length === 0 ? 'bg-slate-700 text-slate-500 cursor-not-allowed' : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 text-white shadow-lg shadow-green-500/20'}`}>
-                  <Icons.FileText /> Generate Purchase Order
+                  <Icons.FileText /> {t.generatePO}
                 </button>
               </div>
             </div>
